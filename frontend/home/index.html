@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home-OutreachHub</title>
+    <script src="../script/index.js"></script>
+    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="../index.css" />
+  </head>
+
+  <body>
+    <nav class="nav">
+      <!-- Logo -->
+      <div class="left">
+        <h1 id="nav-head"><a href="./index.html">OutreachHub</a></h1>
+      </div>
+
+      <!-- Links to other pages -->
+      <div class="links">
+        <ul>
+          <li><a href="../home/">Home</a></li>
+          <li><a href="../contacts/">Contacts</a></li>
+          <li><a href="../message-template/">Message Templates</a></li>
+          <li><a href="../campaigns/">Campaigns</a></li>
+          <li><a href="../about">About</a></li>
+
+          <!-- select - md -->
+          <div class="hamburger">
+            <select name="menu" id="menu" onchange="navigateTo(this)">
+              <option value="">Menu</option>
+              <option value="../home/index.html">Home</option>
+              <option value="../contacts/index.html">Contacts</option>
+              <option value="../message-template/index.html">
+                Message Templates
+              </option>
+              <option value="../campaigns/index.html">Campaigns</option>
+              <option value="../about/index.html">About</option>
+            </select>
+          </div>
+
+          <!-- Logout Button -->
+          <button id="logout">
+            <a href="../authentication/login.html">Logout</a>
+          </button>
+        </ul>
+      </div>
+    </nav>
+    <div class="main">
+      <!-- Welcome -->
+      <h3 id="welcome">Welcome, User!</h3>
+
+      <!-- Main Content -->
+      <div class="content">
+        <div class="col1">
+          <div class="details">
+            <div class="chart"><img src="../images/chart.png" alt="" /></div>
+            <div class="list">
+              <table id="recent">
+                <thead>
+                  <th>Name</th>
+                  <th>Business</th>
+                  <th>Campaign</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>John Doe</td>
+                    <td>AB Overseas</td>
+                    <td>Overseas</td>
+                  </tr>
+                  <tr>
+                    <td>John Doe</td>
+                    <td>AB Overseas</td>
+                    <td>Overseas</td>
+                  </tr>
+                  <tr>
+                    <td>John Doe</td>
+                    <td>AB Overseas</td>
+                    <td>Overseas</td>
+                  </tr>
+                  <tr>
+                    <td>John Doe</td>
+                    <td>AB Overseas</td>
+                    <td>Overseas</td>
+                  </tr>
+                  <tr>
+                    <td>John Doe</td>
+                    <td>AB Overseas</td>
+                    <td>Overseas</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="br-img"></div>
+        </div>
+        <div class="col2">
+          <div class="about">
+            <div class="text">
+              <h2>About OutreachHub</h2>
+              <p>
+                OutreachHub is a platform designed to connect businesses with
+                potential customers through targeted campaigns and outreach
+                efforts. Our mission is to facilitate meaningful connections and
+                drive business growth. We provide tools and resources for
+                businesses to create, manage, and analyze their outreach
+                campaigns effectively. Whether you're a small business looking
+                to expand your reach or a large corporation aiming Lorem, ipsum
+                dolor sit amet consectetur adipisicing elit. Numquam nobis
+                possimus esse aliquid facilis laboriosam tenetur ut error sed
+                incidunt animi soluta accusamus adipisci consequuntur aspernatur
+                minima, corporis ex, fugiat ea enim dolorum? Odio temporibus
+                corporis modi exercitationem, vel in blanditiis? Itaque alias
+                consequatur unde temporibus fugiat veritatis sed quod.
+              </p>
+            </div>
+            <img src="../images/home-about.png" alt="" />
+          </div>
+          <div class="graph">
+            <img src="../images/graph1.png" alt="" />
+            <img src="../images/graph2.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="../images/bg1.png" alt="" id="bg" />
+  </body>
+</html>
