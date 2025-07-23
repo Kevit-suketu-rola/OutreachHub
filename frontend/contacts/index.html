@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Contacts | OutreachHub</title>
+    <script defer src="../script/index.js"></script>
+    <script defer src="../script/contacts.js"></script>
+    <link rel="stylesheet" href="../index.css" />
+    <link rel="stylesheet" href="../css/contacts.css" />
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="left">
+        <h1 id="nav-head"><a href="../home/index.html">OutreachHub</a></h1>
+      </div>
+
+      <div class="links">
+        <ul>
+          <li><a href="../home/">Home</a></li>
+          <li><a href="../contacts/">Contacts</a></li>
+          <li><a href="../message-template/">Message Templates</a></li>
+          <li><a href="../campaigns/">Campaigns</a></li>
+          <li><a href="../about/">About</a></li>
+          
+          <div class="hamburger">
+            <select name="menu" id="menu" onchange="navigateTo(this)">
+              <option value="">Menu</option>
+              <option value="../home/index.html">Home</option>
+              <option value="../contacts/index.html">Contacts</option>
+              <option value="../message-template/index.html">Message Templates</option>
+              <option value="../campaigns/index.html">Campaigns</option>
+              <option value="../about/index.html">About</option>
+            </select>
+          </div>
+
+          <button id="logout">Logout</button>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main">
+      <h3 id="head">Contacts</h3>
+
+      <div class="content">
+        <!-- Search and Filter -->
+        <form id="search-form">
+          <input type="text" id="search" placeholder="Search Contacts" />
+          <select id="select">
+            <option value="name">Name</option>
+            <option value="phoneNumber">Phone</option>
+            <option value="tags">Tags</option>
+          </select>
+          <input id="search-btn" type="submit" value="Search" />
+        </form>
+
+        <!-- Add Button -->
+        <button id="add-contact" onclick="openAddDialogue()">Add Contact</button>
+
+        <!-- Contacts Table -->
+        <div class="contact-container">
+          <table id="contact-table">
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="data"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Container -->
+      <div class="hidden" id="show-dialogue-container">
+        <!-- Show Contact Details -->
+        <div class="hidden" id="show-dialogue">
+          <button id="close" onclick="resetDialogue()">Close</button>
+          <table id="show-table"></table>
+          <div class="btn-container">
+            <button id="edit" onclick="openEditDialogue()">Edit</button>
+            <button id="delete" onclick="deleteEntry()">Delete</button>
+          </div>
+        </div>
+
+        <!-- Edit/Add Form -->
+        <form id="edit-form" class="hidden">
+          <button id="close-edit" type="button" onclick="resetDialogue()">Close</button>
+          <h3 id="form-title">Contact Form</h3>
+          <input type="text" id="name" placeholder="Name" required />
+          <input type="tel" id="phone" placeholder="Phone Number" required />
+          <input type="text" id="tags" placeholder="Tags (comma separated)" />
+          <button id="update-btn" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

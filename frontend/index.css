@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+body {
+  background-color: black;
+}
+body #bg {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.3;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #7826fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+nav h1 a {
+  text-decoration: none;
+  color: white;
+}
+@media screen and (max-width: 768px) {
+  nav h1 a {
+    font-size: 20px;
+  }
+}
+nav .links ul {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  gap: 20px;
+}
+nav .links ul a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+nav .links ul li {
+  transition: scale 0.3s ease-in-out;
+}
+nav .links ul li a:hover {
+  text-decoration: underline;
+}
+nav .links ul li:hover {
+  scale: 1.1;
+}
+@media screen and (max-width: 992px) {
+  nav .links ul li {
+    display: none;
+    background-color: red;
+  }
+}
+nav .links ul .hamburger {
+  display: none;
+}
+@media screen and (max-width: 992px) {
+  nav .links ul .hamburger {
+    display: block;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  nav .links ul .hamburger select {
+    padding: 5px 10px;
+    background: none;
+    color: white;
+    font-weight: bold;
+    border: none;
+  }
+}
+nav .links ul #logout {
+  width: 80px;
+  height: 40px;
+  font-size: 16px;
+  background-color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+}
+nav .links ul #logout a {
+  color: #9d4edd;
+}
+nav .links ul #logout:hover {
+  background-color: black;
+  cursor: pointer;
+  color: white;
+}/*# sourceMappingURL=index.css.map */
