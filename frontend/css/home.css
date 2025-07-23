@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: #6c4ab6;
+  overflow-x: hidden;
+}
+
+.main {
+  min-height: 91.7vh;
+  display: flex;
+  flex-direction: column;
+}
+.main #welcome {
+  font-size: xx-large;
+  margin: 20px;
+  color: white;
+}
+.main .content {
+  width: 100%;
+  margin: 10px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 0 20px;
+}
+.main .content .col1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+.main .content .col1 .details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+.main .content .col1 .details .chart,
+.main .content .col1 .details .list {
+  flex: 1 1 48%;
+  max-width: 48%;
+}
+.main .content .col1 .details .chart img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  border-radius: 20px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  transition: all 0.3s ease-in-out;
+}
+.main .content .col1 .details .chart img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+.main .content .col1 .details .list table {
+  border-collapse: collapse;
+  width: 100%;
+  color: white;
+}
+.main .content .col1 .details .list table thead th {
+  background-color: #7826fa;
+  padding: 10px;
+}
+.main .content .col1 .details .list table thead th:first-child {
+  border-radius: 7px 0 0 0;
+}
+.main .content .col1 .details .list table thead th:last-child {
+  border-radius: 0 7px 0 0;
+}
+.main .content .col1 .details .list table tbody td {
+  text-align: center;
+  background-color: #8a5afa;
+  padding: 12px;
+  border-bottom: 1px solid wheat;
+}
+.main .content .col2 {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  color: white;
+}
+.main .content .col2 .about {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.main .content .col2 .about .text {
+  flex: 1 1 45%;
+}
+.main .content .col2 .about .text h2 {
+  margin-bottom: 10px;
+}
+.main .content .col2 .about .text p {
+  text-align: justify;
+  line-height: 1.5;
+}
+.main .content .col2 .about img {
+  flex: 1 1 45%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.main .content .col2 .graph {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.main .content .col2 .graph img {
+  flex: 1 1 48%;
+  max-width: 48%;
+  height: auto;
+  border-radius: 15px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+@media screen and (max-width: 768px) {
+  .content .col1 {
+    flex-direction: column;
+  }
+  .content .col1 .details {
+    margin: auto;
+  }
+  .content .col1 .details .chart,
+  .content .col1 .details .list {
+    width: 100%;
+  }
+  .content .col2 {
+    flex-direction: column;
+  }
+  .content .col2 .about {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .content .col2 .about .text,
+  .content .col2 .about img {
+    max-width: 100%;
+  }
+  .content .col2 .graph {
+    flex-direction: column;
+  }
+  .content .col2 .graph img {
+    max-width: 100%;
+  }
+  #welcome {
+    font-size: x-large;
+  }
+  .list table thead th,
+  .list table tbody td {
+    font-size: 14px;
+  }
+  .about .text h2 {
+    font-size: 20px;
+  }
+}/*# sourceMappingURL=home.css.map */

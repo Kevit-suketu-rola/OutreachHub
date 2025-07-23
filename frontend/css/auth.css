@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+.container .left {
+  width: 55vw;
+  background-color: #6c4ab6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 50px;
+  color: white;
+  font-weight: 900;
+}
+@media (max-width: 992px) {
+  .container .left {
+    color: black;
+    display: none;
+  }
+}
+.container .right {
+  width: 45vw;
+  background-color: color-accent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media (max-width: 992px) {
+  .container .right {
+    margin: auto;
+    display: block;
+    text-align: center;
+    width: 100vw;
+  }
+}
+.container .right .sm-head {
+  display: none;
+}
+@media (max-width: 992px) {
+  .container .right .sm-head {
+    display: block;
+    font-size: x-large;
+    margin-bottom: 20px auto;
+  }
+}
+.container .right form {
+  width: 350px;
+  height: 360px;
+  background-color: #9d4edd;
+  padding: 30px;
+  border-radius: 7px;
+  text-align: center;
+}
+.container .right form h1 {
+  font-size: 30px;
+  color: white;
+  margin-bottom: 40px;
+}
+.container .right form .form-group {
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80%;
+}
+.container .right form .form-group input {
+  padding: 10px 10px 10px 20px;
+  border: 1px solid #e5dffc;
+  height: 50px;
+  border-radius: 32px;
+}
+.container .right form .form-group button {
+  padding: 10px;
+  border: 1px solid #e5dffc;
+  border-radius: 32px;
+  height: 50px;
+  width: 10rem;
+  margin: 0 auto;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 500ms;
+}
+.container .right form .form-group buttonhover {
+  cursor: pointer;
+}
+.container .right form .form-group span a {
+  text-decoration: none;
+  color: rgb(220, 194, 255);
+}
+.container .right form .form-group span a:hover {
+  color: white;
+}
+@media (max-width: 768px) {
+  .container .right form {
+    margin: 10px auto;
+  }
+}
+.container .right #sign-up-form {
+  height: 600px;
+}
+.container .right #sign-up-form .form-group button {
+  margin: 10px auto;
+}/*# sourceMappingURL=auth.css.map */

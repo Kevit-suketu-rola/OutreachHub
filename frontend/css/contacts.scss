@@ -1,0 +1,260 @@
+@import "variables.scss";
+
+body {
+  background-color: #fff;
+}
+
+.main {
+  min-height: 91.7vh;
+  display: flex;
+  flex-direction: column;
+
+  #head {
+    font-size: 2rem;
+    margin: 50px 0 0 20px;
+    color: $color-head;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    #search-form {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 15px;
+      margin: 30px auto 20px 6.5%;
+      width: 90%;
+
+      input,
+      select {
+        border: 1px solid $color-accent;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+
+      #search {
+        width: 300px;
+      }
+
+      #select {
+        width: 180px;
+        background-color: $color-bg-light;
+      }
+
+      #search-btn {
+        background-color: $color-accent;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: darken($color-accent, 10%);
+        }
+      }
+    }
+
+    #add-contact {
+      margin: 10px auto;
+      padding: 10px 25px;
+      border-radius: 25px;
+      border: 1px solid $color-accent;
+      background-color: white;
+      font-weight: bold;
+      transition: all 0.3s, color 0.3s;
+
+      &:hover {
+        background-color: $color-accent;
+        color: white;
+        cursor: pointer;
+      }
+    }
+
+    .contact-container {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+
+      #contact-table {
+        width: 90%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+        th,
+        td {
+          text-align: center;
+          padding: 12px 8px;
+          border-bottom: 1px solid #ddd;
+        }
+
+        thead {
+          background-color: $color-bg-light;
+          th {
+            font-weight: bold;
+          }
+        }
+
+        tbody tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+
+        button {
+          background-color: #28a745;
+          border: none;
+          color: white;
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #218838;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Modal & Form */
+#show-dialogue-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: none;
+  &.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #show-dialogue,
+  #edit-form {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  #show-dialogue {
+    display: none;
+    flex-direction: column;
+
+    &.flex {
+      display: flex;
+    }
+
+    button#close {
+      align-self: flex-end;
+      background-color: crimson;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 20px;
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        width: 30%;
+        font-weight: 600;
+      }
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+
+      button {
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        color: white;
+        border: none;
+      }
+
+      #edit {
+        background-color: #007bff;
+      }
+
+      #delete {
+        background-color: #dc3545;
+      }
+    }
+  }
+
+  #edit-form {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+
+    &.flex {
+      display: flex;
+    }
+
+    #close-edit {
+      align-self: flex-end;
+      background-color: crimson;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid $color-accent;
+      border-radius: 20px;
+      background-color: $color-bg-light;
+    }
+
+    #update-btn {
+      background-color: $color-accent;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: darken($color-accent, 10%);
+      }
+    }
+  }
+}
+
+/* for toggling classes */
+.hidden {
+  display: none;
+}
+.flex {
+  display: flex;
+}
