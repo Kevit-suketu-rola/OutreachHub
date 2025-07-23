@@ -1,11 +1,11 @@
-# Project Definition
+# Outreach Hub 📈
 
 ## 1. Implement Multi-Tenant (Workspaces) Platform
 
 The platform comprises two major parts:
 
 ### a. Admin Portal
-For managing business workspaces and workspace users.
+📁 For managing business workspaces and workspace users.
 
 #### i. Access Control
 - Only admin users can access this portal.
@@ -24,7 +24,7 @@ For managing business workspaces and workspace users.
 ---
 
 ### b. OutreachHub Portal (User Facing Portal)
-For workspace users with features like contacts, message templates, campaigns, and analytics.
+📊 For workspace users with features like contacts, message templates, campaigns, and analytics.
 
 #### i. Access Control
 - Only workspace users can access this portal.
@@ -95,9 +95,3 @@ For workspace users with features like contacts, message templates, campaigns, a
 
 Improve the system for cases where a user with the same email is added to more than one workspace.  
 **Question**: How will the user access multiple workspaces from the OutreachHub portal?
-
----
-
-### d. Note
-
-Maintain all code in a **GitHub repository** to prevent data loss and ensure proper project lifecycle management.
