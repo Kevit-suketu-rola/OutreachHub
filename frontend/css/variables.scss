@@ -1,0 +1,39 @@
+// Base Colours
+$color-bg: #6c4ab6;
+$color-bg-light: #d5c2ff;
+$color-primary: #f8f5ff;
+$color-accent: #9d4edd;
+$color-font: #2b223b;
+$color-font-light: #ab9cff;
+$color-head: #7826fa;
+$color-border: #4c00ff;
+$color-text-dark: #333;
+$color-light-gray: #f4f4f4;
+$gray: #ccc;
+$color-dark-gray: #555;
+
+// UI Elements
+$color-nav-bg: $color-primary;
+$color-card-bg: #ffffff;
+$color-border: #e5dffc;
+
+// Font and Typography
+$font-base: "Inter", sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 20px;
+$font-size-xl: 50px;
+
+// for responsive design
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $font-base;
+}
+
+$breakpoint-xl: 1200px;

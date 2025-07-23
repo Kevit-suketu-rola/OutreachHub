@@ -1,0 +1,231 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: #fff;
+}
+
+.main {
+  min-height: 91.7vh;
+  display: flex;
+  flex-direction: column;
+}
+.main #head {
+  font-size: 2rem;
+  margin: 50px 0 0 20px;
+  color: #7826fa;
+}
+.main .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.main .content #search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  margin: 30px auto 20px 6.5%;
+  width: 90%;
+}
+.main .content #search-form input,
+.main .content #search-form select {
+  border: 1px solid #9d4edd;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+.main .content #search-form #search {
+  width: 300px;
+}
+.main .content #search-form #select {
+  width: 180px;
+  background-color: #d5c2ff;
+}
+.main .content #search-form #search-btn {
+  background-color: #9d4edd;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.main .content #search-form #search-btn:hover {
+  background-color: rgb(132.8151658768, 39.9620853081, 208.0379146919);
+}
+.main .content #add-contact {
+  margin: 10px auto;
+  padding: 10px 25px;
+  border-radius: 25px;
+  border: 1px solid #9d4edd;
+  background-color: white;
+  font-weight: bold;
+  transition: all 0.3s, color 0.3s;
+}
+.main .content #add-contact:hover {
+  background-color: #9d4edd;
+  color: white;
+  cursor: pointer;
+}
+.main .content .contact-container {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+.main .content .contact-container #contact-table {
+  width: 90%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.main .content .contact-container #contact-table th,
+.main .content .contact-container #contact-table td {
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid #ddd;
+}
+.main .content .contact-container #contact-table thead {
+  background-color: #d5c2ff;
+}
+.main .content .contact-container #contact-table thead th {
+  font-weight: bold;
+}
+.main .content .contact-container #contact-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.main .content .contact-container #contact-table button {
+  background-color: #28a745;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.main .content .contact-container #contact-table button:hover {
+  background-color: #218838;
+}
+
+/* Modal & Form */
+#show-dialogue-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+#show-dialogue-container.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#show-dialogue-container #show-dialogue,
+#show-dialogue-container #edit-form {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+#show-dialogue-container #show-dialogue {
+  display: none;
+  flex-direction: column;
+}
+#show-dialogue-container #show-dialogue.flex {
+  display: flex;
+}
+#show-dialogue-container #show-dialogue button#close {
+  align-self: flex-end;
+  background-color: crimson;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+#show-dialogue-container #show-dialogue table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+#show-dialogue-container #show-dialogue table th,
+#show-dialogue-container #show-dialogue table td {
+  padding: 8px;
+  text-align: left;
+}
+#show-dialogue-container #show-dialogue table th {
+  width: 30%;
+  font-weight: 600;
+}
+#show-dialogue-container #show-dialogue .btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+#show-dialogue-container #show-dialogue .btn-container button {
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  border: none;
+}
+#show-dialogue-container #show-dialogue .btn-container #edit {
+  background-color: #007bff;
+}
+#show-dialogue-container #show-dialogue .btn-container #delete {
+  background-color: #dc3545;
+}
+#show-dialogue-container #edit-form {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+#show-dialogue-container #edit-form.flex {
+  display: flex;
+}
+#show-dialogue-container #edit-form #close-edit {
+  align-self: flex-end;
+  background-color: crimson;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#show-dialogue-container #edit-form input {
+  padding: 10px;
+  border: 1px solid #9d4edd;
+  border-radius: 20px;
+  background-color: #d5c2ff;
+}
+#show-dialogue-container #edit-form #update-btn {
+  background-color: #9d4edd;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#show-dialogue-container #edit-form #update-btn:hover {
+  background-color: rgb(132.8151658768, 39.9620853081, 208.0379146919);
+}
+
+/* for toggling classes */
+.hidden {
+  display: none;
+}
+
+.flex {
+  display: flex;
+}/*# sourceMappingURL=contacts.css.map */
