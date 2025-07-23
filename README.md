@@ -1,4 +1,4 @@
-# Outreach Hub 📈
+# OutreachHub 📈
 
 ## 1. Implement Multi-Tenant (Workspaces) Platform
 
