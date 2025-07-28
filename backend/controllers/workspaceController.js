@@ -78,7 +78,7 @@ const deleteWorkspace = async (req, res) => {
 
   const workspaceId = req.body.workspaceId;
   // console.log(workspaceId);
-  
+
   try {
     const workspace = await Workspace.findById(workspaceId);
 
@@ -137,10 +137,73 @@ const setWorkspace = async (req, res) => {
   }
 };
 
+//add tags to workspace
+const addTagsToWorkspace = async (req, res) => {
+  // may change
+  const workspaceId = req.body.workspaceId;
+  const tags = req.body.tags;
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+  if (!isAdmin) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  try {
+    let workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      res.status(404).json({ message: "Workspace not found" });
+    }
+    for (let tag of tags) {
+      // console.log(tag);
+      if (!workspace.tags.includes(tag)) {
+        workspace.tags.push(tag);
+      }
+    }
+    await workspace.save();
+    res.json({ message: "Tag added successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add tag" });
+  }
+};
+
+// remove tags from workspace
+const removeTagsFromWorkspace = async (req, res) => {
+  let tags = req.body.tags;
+  // may change
+  const workspaceId = req.body.workspaceId;
+
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+  if (!isAdmin) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (!tags || !workspaceId) {
+    return res.status(400).json({ message: "Invalid request" });
+  }
+  let workspace = await Workspace.findById(workspaceId);
+
+  try {
+    for (let tag of tags) {
+      if (workspace.tags.includes(tag)) {
+        workspace.tags.splice(workspace.tags.indexOf(tag), 1);
+      }
+    }
+    await workspace.save();
+    res.json({ message: "Tags removed successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to remove tags" });
+  }
+};
+
 module.exports = {
   getAllWorkspacesForAdmin,
   getAllWorkspacesForUser,
   createWorkspace,
   deleteWorkspace,
   setWorkspace,
+  addTagsToWorkspace,
+  removeTagsFromWorkspace,
 };
