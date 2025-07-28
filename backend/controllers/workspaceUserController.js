@@ -9,8 +9,16 @@ const User = require("../models/User");
 const addMember = async (req, res) => {
   const { workspaceId, userId } = req.body;
 
-  let isAdmin = Admin.findOne({ _id: req.user.adminId });
-  if (!isAdmin) {
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+  const isAddAllowed = !!(await WorkspaceUser.findOne({
+    workspaceId: new mongoose.Types.ObjectId(workspaceId),
+    userId: new mongoose.Types.ObjectId(userId),
+    "permissions.allowAdd": true,
+  }));
+
+  if (!isAdmin && !isAddAllowed) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -46,7 +54,6 @@ const addMember = async (req, res) => {
       { $addToSet: { workspaces: workspaceId } },
       { new: true }
     );
-    console.log(user);
 
     await workspaceUser.save();
 
@@ -61,8 +68,17 @@ const addMember = async (req, res) => {
 const deleteMember = async (req, res) => {
   const { workspaceId, userId } = req.body;
 
-  let isAdmin = Admin.findOne({ _id: req.user.adminId });
-  if (!isAdmin) {
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+
+  const isAddAllowed = !!(await WorkspaceUser.findOne({
+    workspaceId: new mongoose.Types.ObjectId(workspaceId),
+    userId: new mongoose.Types.ObjectId(req.user.userId),
+    "permissions.allowAdd": true,
+  }));
+
+  if (!isAdmin && !isAddAllowed) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

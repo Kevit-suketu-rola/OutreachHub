@@ -1,8 +1,10 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const Workspace = require("../models/Workspace");
 const mongoose = require("mongoose");
 const Admin = require("../models/Admin");
 const WorkspaceUser = require("../models/WorkspaceUser");
+const User = require("../models/User");
 
 // Admin: Get all workspaces
 const getAllWorkspacesForAdmin = async (req, res) => {
@@ -21,6 +23,7 @@ const getAllWorkspacesForAdmin = async (req, res) => {
 
 // User: Get all workspaces for a specific user ID
 const getAllWorkspacesForUser = async (req, res) => {
+  const userId = req.params.userId;
   try {
     const workspaceUsers = await WorkspaceUser.find({ userId })
       .populate("workspaceId")
@@ -66,8 +69,78 @@ const createWorkspace = async (req, res) => {
   }
 };
 
+//delete workspace
+const deleteWorkspace = async (req, res) => {
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+  if (!isAdmin) return res.status(401).json({ message: "Unauthorized" });
+
+  const workspaceId = req.body.workspaceId;
+  // console.log(workspaceId);
+  
+  try {
+    const workspace = await Workspace.findById(workspaceId);
+
+    if (!workspace) {
+      return res.status(404).json({ message: "Workspace not found" });
+    }
+    //deleting from WorkspaceUser
+    await WorkspaceUser.deleteMany({ workspaceId });
+    //deleting from User
+    await User.updateMany(
+      { workspaces: workspaceId },
+      { $pull: { workspaces: workspaceId } }
+    );
+
+    await Workspace.deleteOne({ _id: workspaceId });
+    res.json({ message: "Workspace deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete workspace", error: err });
+  }
+};
+
+//set workspace
+const setWorkspace = async (req, res) => {
+  const workspaceId = req.body.workspaceId;
+
+  let tokenObject = {
+    adminId: req.user.adminId,
+    userId: req.user.userId,
+    workspaceId: workspaceId,
+  };
+  try {
+    if (!req.user.adminId) {
+      const isInWorkspace = !!(await User.findOne({
+        _id: new mongoose.Types.ObjectId(req.user.userId),
+        workspaces: workspaceId,
+      }).select("_id"));
+
+      if (!isInWorkspace) {
+        return res.status(401).json({ message: "Not in workspace" });
+      }
+      tokenObj = {
+        userId: req.user.userId,
+        workspaceId: workspaceId,
+      };
+    }
+    // console.log(tokenObject);
+
+    const token = jwt.sign(tokenObject, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.json({ message: "Workspace set successfully", token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to set workspace", err });
+  }
+};
+
 module.exports = {
   getAllWorkspacesForAdmin,
   getAllWorkspacesForUser,
   createWorkspace,
+  deleteWorkspace,
+  setWorkspace,
 };
