@@ -24,6 +24,7 @@ const ContactSchema = mongoose.Schema({
         /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     },
   },
+  
   company: { type: String, required: true },
   jobTitle: { type: String, required: true },
   tags: { type: [String], default: [] },
