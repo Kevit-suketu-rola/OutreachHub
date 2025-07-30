@@ -5,16 +5,17 @@ const Admin = require("../models/Admin");
 const WorkspaceUser = require("../models/WorkspaceUser");
 const User = require("../models/User");
 
-// Add member to a workspace (Admin only)
+// Add member to a workspace (Admin only or allowAdd member)
 const addMember = async (req, res) => {
-  const { workspaceId, userId } = req.body;
+  const { userId } = req.body;
+  const workspaceId = req.user.workspaceId || req.body.workspaceId;
 
   let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
     "name"
   ));
   const isAddAllowed = !!(await WorkspaceUser.findOne({
     workspaceId: new mongoose.Types.ObjectId(workspaceId),
-    userId: new mongoose.Types.ObjectId(userId),
+    userId: new mongoose.Types.ObjectId(req.user.userId),
     "permissions.allowAdd": true,
   }));
 
