@@ -8,6 +8,7 @@ const workspaceRouter = require("./routes/workspaceRoutes");
 const workspaceUserRouter = require("./routes/workspaceUserRoutes");
 const contactRouter = require("./routes/contactRoutes");
 const messageTemplateRouter = require("./routes/messageTemplateRoutes");
+const campaignRouter = require("./routes/campaignRoutes");
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,7 @@ mongoose
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/contact", contactRouter);
+app.use("/campaign", campaignRouter);
 app.use("/messageTemplate", messageTemplateRouter);
 app.use("/workspace", workspaceRouter);
 app.use("/workspaceUser", workspaceUserRouter);

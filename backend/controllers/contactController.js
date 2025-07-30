@@ -1,8 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Contact = require("../models/Contact");
+const WorkspaceUser = require("../models/WorkspaceUser");
 
 const isAllowedUser = async (req, res) => {
+  const workspaceId = req.user.workspaceId;
+  const userId = req.user.userId;
+
   let isWriteTrue = !!(await WorkspaceUser.findOne({
     workspaceId,
     userId,
@@ -59,6 +63,7 @@ const addContact = async (req, res) => {
         phoneNo: req.body.contactInfo.phoneNo,
         countryCode: req.body.contactInfo.countryCode,
       },
+      tags: req.body.tags,
       company: req.body.company,
       jobTitle: req.body.jobTitle,
     });
@@ -112,11 +117,14 @@ const editContact = async (req, res) => {
           company: company,
           jobTitle: jobTitle,
         },
+        $push: {
+          tags: req.body.tags,
+        },
       }
     );
     res.status(201).json({ message: "Contact edited successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to edit contact", err });
+    res.status(500).json({ message: "Failed to edit contact" });
   }
 };
 

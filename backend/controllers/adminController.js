@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
 const { default: mongoose } = require("mongoose");
 
-// SignUp ( will nevwr happen )
+// SignUp ( will never happen )
 const signup = async (req, res) => {
   const { name, password, contactInfo } = req.body;
 
@@ -40,7 +40,7 @@ const login = async (req, res) => {
   if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
   const token = jwt.sign({ adminId: admin._id }, process.env.JWT_SECRET, {
-    expiresIn: "24h",
+    expiresIn: "1h",
   });
 
   res.json({ message: "login successful", token });
