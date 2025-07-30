@@ -69,6 +69,32 @@ const createWorkspace = async (req, res) => {
   }
 };
 
+//edit workspace
+const editWorkspace = async (req, res) => {
+  const workspaceId = req.params.workspaceId;
+  const adminId = req.user.adminId;
+
+  let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
+    "name"
+  ));
+  if (!isAdmin) return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const workspace = await Workspace.updateOne(
+      { _id: workspaceId },
+      {
+        $set: {
+          name: req.body.name,
+          description: req.body.description,
+        },
+      }
+    );
+    res.status(200).json({ message: "Workspace edited successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to edit workspace" });
+  }
+};
+
 //delete workspace
 const deleteWorkspace = async (req, res) => {
   let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
@@ -76,7 +102,7 @@ const deleteWorkspace = async (req, res) => {
   ));
   if (!isAdmin) return res.status(401).json({ message: "Unauthorized" });
 
-  const workspaceId = req.body.workspaceId;
+  const workspaceId = req.params.workspaceId;
   // console.log(workspaceId);
 
   try {
@@ -145,21 +171,25 @@ const addTagsToWorkspace = async (req, res) => {
   let isAdmin = !!(await Admin.findOne({ _id: req.user.adminId }).select(
     "name"
   ));
+
   if (!isAdmin) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   try {
     let workspace = await Workspace.findById(workspaceId);
 
     if (!workspace) {
       res.status(404).json({ message: "Workspace not found" });
     }
+
     for (let tag of tags) {
       // console.log(tag);
       if (!workspace.tags.includes(tag)) {
         workspace.tags.push(tag);
       }
     }
+
     await workspace.save();
     res.json({ message: "Tag added successfully" });
   } catch (err) {
@@ -202,6 +232,7 @@ module.exports = {
   getAllWorkspacesForAdmin,
   getAllWorkspacesForUser,
   createWorkspace,
+  editWorkspace,
   deleteWorkspace,
   setWorkspace,
   addTagsToWorkspace,

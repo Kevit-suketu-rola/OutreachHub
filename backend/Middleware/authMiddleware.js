@@ -6,12 +6,13 @@ const authMiddleware = (req, res, next) => {
   const authHeader =
     req.headers.authorization || req.headers["x-forwarded-authorization"];
   const token = authHeader ? authHeader.split(" ")[1] : null;
+  // console.log(token);
 
   if (!token) return res.status(401).json({ message: "Access denied" });
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("verified: ", verified);
+    // console.log("verified: ", verified);
 
     req.user = verified;
 

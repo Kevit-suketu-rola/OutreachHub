@@ -7,7 +7,6 @@ const CampaignSchema = mongoose.Schema({
     ref: "Workspace",
     required: true,
   },
-  creator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: { type: String, required: true },
   creationDate: { type: Date, default: Date.now },
   tags: { type: [String], default: [] },
