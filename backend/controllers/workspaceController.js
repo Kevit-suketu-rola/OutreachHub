@@ -23,7 +23,7 @@ const getAllWorkspacesForAdmin = async (req, res) => {
 
 // User: Get all workspaces for a specific user ID
 const getAllWorkspacesForUser = async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.user.userId;
   try {
     const workspaceUsers = await WorkspaceUser.find({ userId })
       .populate("workspaceId")
@@ -80,7 +80,7 @@ const editWorkspace = async (req, res) => {
   if (!isAdmin) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    const workspace = await Workspace.updateOne(
+    await Workspace.updateOne(
       { _id: workspaceId },
       {
         $set: {
@@ -102,8 +102,8 @@ const deleteWorkspace = async (req, res) => {
   ));
   if (!isAdmin) return res.status(401).json({ message: "Unauthorized" });
 
-  const workspaceId = req.params.workspaceId;
-  // console.log(workspaceId);
+  const workspaceId = req.body.workspaceId;
+  console.log(workspaceId);
 
   try {
     const workspace = await Workspace.findById(workspaceId);
