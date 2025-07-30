@@ -7,11 +7,11 @@ const MessageTemplateSchema = mongoose.Schema({
     ref: "Workspace",
     required: true,
   },
-  creator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   type: { type: String, enum: ["text", "text-image"], default: "text" },
   title: { type: String, required: true },
-  campaignImage: {
+  templateImage: {
     type: String,
+    default: "https://www.w3schools.com/howto/img_avatar.png",
   },
   template: { type: String, required: true },
 });

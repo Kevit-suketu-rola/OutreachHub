@@ -2,6 +2,20 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Contact = require("../models/Contact");
 
+const isAllowedUser = async (req, res) => {
+  let isWriteTrue = !!(await WorkspaceUser.findOne({
+    workspaceId,
+    userId,
+    "permissions.write": true,
+  }));
+
+  let isInsideWorkspace = req.user.workspaceId;
+
+  if (!isWriteTrue && !isInsideWorkspace) {
+    return res.status(401).json({ message: "Permission denied" });
+  }
+};
+
 // get all contacts by workspace
 const getAllContactsOfWorkspace = async (req, res) => {
   const workspaceId = req.user.workspaceId;
@@ -31,6 +45,8 @@ const addContact = async (req, res) => {
   const workspaceId = req.user.workspaceId;
   const userId = req.user.userId;
 
+  await isAllowedUser(req, res);
+
   try {
     const contact = new Contact({
       _id: new mongoose.Types.ObjectId(),
@@ -58,6 +74,8 @@ const addContact = async (req, res) => {
 const deleteContact = async (req, res) => {
   const userId = req.user.userId;
 
+  await isAllowedUser(req, res);
+
   try {
     const contact = await Contact.findOneAndDelete({
       _id: req.params.contactId,
@@ -74,6 +92,8 @@ const deleteContact = async (req, res) => {
 const editContact = async (req, res) => {
   const contactId = req.params.contactId;
   const { name, profilePicture, contactInfo, company, jobTitle } = req.body;
+
+  await isAllowedUser(req, res);
 
   try {
     const contact = await Contact.findOneAndUpdate(
