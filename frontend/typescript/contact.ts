@@ -1,6 +1,6 @@
-const API_BASE = "http://localhost:3000";
-const token = localStorage.getItem("token");
-const workspaceId = localStorage.getItem("workspaceId");
+const API_BASE: string = "http://localhost:3000";
+const token: string | null = localStorage.getItem("token");
+const workspaceId: string | null = localStorage.getItem("workspaceId");
 
 if (!token) {
   window.location.href = "../authentication/login.html";
@@ -11,49 +11,51 @@ const headers = {
   Authorization: `Bearer ${token}`,
 };
 
-const nameInput = document.getElementById("name");
-const phoneInput = document.getElementById("phone");
-const tagsInput = document.getElementById("tags");
+const nameInput = document.getElementById("name") as HTMLInputElement;
+const phoneInput = document.getElementById("phone") as HTMLInputElement;
+const tagsInput = document.getElementById("tags") as HTMLInputElement;
 
-const searchInput = document.getElementById("search");
-const searchSelect = document.getElementById("select");
-const searchForm = document.getElementById("search-form");
+const searchInput = document.getElementById("search") as HTMLInputElement;
+const searchSelect = document.getElementById("select") as HTMLSelectElement;
+const searchForm = document.getElementById("search-form") as HTMLFormElement;
 
-const dataContainer = document.getElementById("data");
+const dataContainer = document.getElementById("data") as HTMLDivElement;
 
-const editForm = document.getElementById("edit-form");
-const showDialogue = document.getElementById("show-dialogue");
-const dialogueContainer = document.getElementById("show-dialogue-container");
-const showTable = document.getElementById("show-table");
+const editForm = document.getElementById("edit-form") as HTMLFormElement;
+const showDialogue = document.getElementById("show-dialogue") as HTMLDivElement;
+const dialogueContainer = document.getElementById(
+  "show-dialogue-container"
+) as HTMLDivElement;
+const showTable = document.getElementById("show-table") as HTMLTableElement;
 
 const logoutBtn = document.getElementById("logout");
 
-let entries = [];
-let currentIndex = -1;
-let currentRequest = "POST";
+let entries: Contact[] = [];
+let currentIndex: number = -1;
+let currentRequest: string = "POST";
 
 // Load data
 document.addEventListener("DOMContentLoaded", fetchContacts);
 
-logoutBtn.addEventListener("click", () => {
+logoutBtn?.addEventListener("click", (): void => {
   localStorage.clear();
   window.location.href = "../authentication/login.html";
 });
 
-searchForm.addEventListener("submit", (e) => {
+searchForm.addEventListener("submit", (e: Event): void => {
   e.preventDefault();
   searchContacts();
 });
 
-editForm.addEventListener("submit", (e) => {
+editForm.addEventListener("submit", (e): void => {
   e.preventDefault();
   currentRequest === "POST" ? createContact() : updateContact();
 });
 
 // Fetch all contacts
-async function fetchContacts() {
+async function fetchContacts(): Promise<void> {
   try {
-    const res = await fetch(`${API_BASE}/contacts`, {
+    const res: Response = await fetch(`${API_BASE}/contacts`, {
       headers,
     });
     let data = await res.json();
@@ -65,14 +67,14 @@ async function fetchContacts() {
 }
 
 // Render contacts in table
-function renderTable(list) {
+function renderTable(list: any[]) {
   dataContainer.innerHTML = "";
   if (!list.length) {
     dataContainer.innerHTML = `<tr><td colspan="6">No contacts found.</td></tr>`;
     return;
   }
 
-  list.forEach((entry, index) => {
+  list.forEach((entry: any, index: number): void => {
     const row = `
       <tr>
         <td>${index + 1}</td>
@@ -86,21 +88,21 @@ function renderTable(list) {
 }
 
 // Filter contacts by search
-function searchContacts() {
-  const query = searchInput.value.trim().toLowerCase();
-  const field = searchSelect.value;
-  const filtered = entries.filter((entry) =>
-    entry[field]?.toLowerCase().includes(query)
+function searchContacts(): void {
+  const query: string = searchInput.value.trim().toLowerCase();
+  const field: keyof Contact = searchSelect.value as keyof Contact;
+
+  const filtered: Contact[] = entries.filter((entry: Contact) =>
+    (entry[field] as string)?.toLowerCase().includes(query)
   );
+
   renderTable(filtered);
 }
 
 // Open contact detail
-function openEntry(index) {
+function openEntry(index: number): void {
   currentIndex = index;
-  const c = entries[index];
-  console.log(entries);
-
+  const c: Contact = entries[index];
   showTable.innerHTML = `
     <tr><th>Name</th><td>${c.name}</td></tr>
     <tr><th>Phone</th><td>${c.phoneNumber}</td></tr>
@@ -110,7 +112,7 @@ function openEntry(index) {
 }
 
 //  Add Contact Form
-function openAddDialogue() {
+function openAddDialogue(): void {
   currentRequest = "POST";
   clearForm();
   toggleContainer();
@@ -118,9 +120,9 @@ function openAddDialogue() {
 }
 
 //  Edit Contact Form
-function openEditDialogue() {
+function openEditDialogue(): void {
   currentRequest = "PUT";
-  const c = entries[currentIndex];
+  const c: Contact = entries[currentIndex];
   nameInput.value = c.name;
   phoneInput.value = c.phoneNumber;
   tagsInput.value = c.tags.join(", ");
@@ -129,8 +131,8 @@ function openEditDialogue() {
 }
 
 // New Contact
-async function createContact() {
-  const body = getFormData();
+async function createContact(): Promise<void> {
+  const body: any = getFormData();
 
   try {
     await fetch(`${API_BASE}/contacts`, {
@@ -146,10 +148,9 @@ async function createContact() {
 }
 
 // Updated Contact
-async function updateContact() {
-  const contact = entries[currentIndex];
-  
-  const body = getFormData();
+async function updateContact(): Promise<void> {
+  const contact: Contact = entries[currentIndex];
+  const body: any = getFormData();
 
   try {
     await fetch(`${API_BASE}/contacts/${contact.id}`, {
@@ -165,8 +166,8 @@ async function updateContact() {
 }
 
 // Delete Contact
-async function deleteEntry() {
-  const contact = entries[currentIndex];
+async function deleteEntry(): Promise<void> {
+  const contact: Contact = entries[currentIndex];
   const confirmed = confirm(`Delete contact "${contact.name}"?`);
   if (!confirmed) return;
 
@@ -183,7 +184,7 @@ async function deleteEntry() {
 }
 
 // helper functions
-function getFormData() {
+function getFormData(): Contact {
   return {
     name: nameInput.value.trim(),
     phoneNumber: phoneInput.value.trim(),
@@ -194,14 +195,14 @@ function getFormData() {
   };
 }
 
-function clearForm() {
+function clearForm(): void {
   nameInput.value = "";
   phoneInput.value = "";
   tagsInput.value = "";
 }
 
 // dialogue control
-function resetDialogue() {
+function resetDialogue(): void {
   editForm.classList.add("hidden");
   dialogueContainer.classList.add("hidden");
   showDialogue.classList.add("hidden");
@@ -211,22 +212,22 @@ function resetDialogue() {
   currentIndex = -1;
 }
 
-function toggleForm() {
+function toggleForm(): void {
   editForm.classList.toggle("flex");
   editForm.classList.toggle("hidden");
 }
 
-function toggleContainer() {
+function toggleContainer(): void {
   dialogueContainer.classList.toggle("hidden");
   dialogueContainer.classList.toggle("flex");
 }
 
-function toggleShow() {
+function toggleShow(): void {
   showDialogue.classList.toggle("hidden");
   showDialogue.classList.toggle("flex");
 }
 
-function openShowDialogue() {
+function openShowDialogue(): void {
   toggleContainer();
   toggleShow();
 }
