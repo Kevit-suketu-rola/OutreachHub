@@ -7,6 +7,7 @@ import { Token, TokenSchema } from './auth-guard/token.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { AdminModule } from './admin/admin.module';
 import { Admin, AdminSchema } from './admin/admin.schema';
+import { WorkspaceModule } from './workspace/workspace.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { Admin, AdminSchema } from './admin/admin.schema';
       inject: [ConfigService],
     }),
     AdminModule,
+    WorkspaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
