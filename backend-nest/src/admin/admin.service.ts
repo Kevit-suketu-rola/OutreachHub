@@ -17,52 +17,47 @@ export class AdminService {
   ) {}
 
   async adminLogin(admin: AdminLoginDto) {
-    try {
-      const foundAdmin = await this.adminModel.findOne({
-        'contactInfo.email': admin.email,
-      });
+    const foundAdmin = await this.adminModel.findOne({
+      'contactInfo.email': admin.email,
+      
+    });
 
-      if (!foundAdmin)
-        throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
+    if (!foundAdmin)
+      throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
 
-      let hashedPass = foundAdmin.password;
-      let passwordMatch = bcrypt.compareSync(admin.password, hashedPass);
+    let hashedPass = foundAdmin.password;
+    let passwordMatch = bcrypt.compareSync(admin.password, hashedPass);
 
-      if (!passwordMatch)
-        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    if (!passwordMatch)
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
 
-      let alreadyLoggedIn = await this.tokenModel.findOne({
-        userId: foundAdmin._id,
-      });
-      if (alreadyLoggedIn) {
-        return {
-          message: 'Already logged in',
-        };
-      }
-
-      const token = await this.jwtService.signAsync(
-        {
-          adminId: foundAdmin._id,
-        },
-        {
-          expiresIn: '1h',
-        },
-      );
-
-      await this.tokenModel.create({
-        token,
-        userId: foundAdmin._id,
-      });
-
+    let alreadyLoggedIn = await this.tokenModel.findOne({
+      userId: foundAdmin._id,
+    });
+    if (alreadyLoggedIn) {
       return {
-        message: 'Logged in successfully',
-        token,
-      };
-    } catch (error) {
-      return {
-        message: 'Login failed',
+        message: 'Already logged in',
       };
     }
+
+    const token = await this.jwtService.signAsync(
+      {
+        adminId: foundAdmin._id,
+      },
+      {
+        expiresIn: '1h',
+      },
+    );
+
+    await this.tokenModel.create({
+      token,
+      userId: foundAdmin._id,
+    });
+
+    return {
+      message: 'Logged in successfully',
+      token,
+    };
   }
 
   async adminLogout(req: any) {
@@ -111,6 +106,20 @@ export class AdminService {
       };
     } catch (error) {
       return { error };
+    }
+  }
+
+  async adminExists(adminId: string) {
+    try {
+      const admin = await this.adminModel.findById(adminId);
+
+      if (!admin) {
+        return [admin, false];
+      }
+
+      return [admin, true];
+    } catch (err) {
+      return [null, true];
     }
   }
 }

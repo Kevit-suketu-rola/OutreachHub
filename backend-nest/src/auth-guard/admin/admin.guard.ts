@@ -4,7 +4,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,13 +23,11 @@ export class AdminGuard implements CanActivate {
     const authHeader = request.headers.authorization;
 
     if (!authHeader) return false;
-    console.log('authHeader', authHeader);
 
     const token = authHeader.split(' ')[1];
 
     if (!token)
       throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
-    console.log('token', token);
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
@@ -44,7 +41,6 @@ export class AdminGuard implements CanActivate {
 
       if (!(isValid?.token === token) || !payload)
         throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-      console.log('payload', payload);
 
       request['admin'] = payload;
     } catch {
