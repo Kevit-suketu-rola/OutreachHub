@@ -43,13 +43,17 @@ export class UserService {
         throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
       }
 
-      let alreadyLoggedIn = await this.tokenModel.findOne({
-        userId: user._id,
-      });
+      let alreadyLoggedIn = await this.tokenModel.findOne(
+        {
+          userId: user._id,
+        },
+        { token: 1, _id: 0 },
+      );
 
       if (alreadyLoggedIn) {
         return {
           message: 'Already logged in',
+          token: alreadyLoggedIn.token,
         };
       }
 
@@ -65,7 +69,14 @@ export class UserService {
         userId: user._id,
       });
 
-      return { message: 'User logged in successfully', token };
+      return {
+        message: 'User logged in successfully',
+        token,
+        user: {
+          userId: user._id,
+          name: user.name,
+        },
+      };
     } catch (error) {
       throw new HttpException(
         'Failed to login user',
@@ -114,10 +125,47 @@ export class UserService {
 
     await newUser.save();
 
+    if (createUserDto.workspaceId) {
+      await this.workspaceUserService.addUserToWorkspace({
+        userId: newUser._id.toString(),
+        workspaceId: createUserDto.workspaceId,
+        permissions: {
+          read: true,
+          write: true,
+          allowAdd: true,
+        },
+      });
+    }
+
     return {
       message: 'User created successfully',
       user: { newUser },
     };
+  }
+
+  async getAllUsers() {
+    const users = await this.userModel.find({
+      isDeleted: false,
+    });
+
+    if (users.length === 0) {
+      throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: 'Users fetched successfully', users };
+  }
+
+  async getUserById(userId: string) {
+    const user = await this.userModel.findOne({
+      _id: userId,
+      isDeleted: false,
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: 'User fetched successfully', user };
   }
 
   async updateUser(req: any, updateUserDto: UpdateUserDto) {
@@ -168,13 +216,13 @@ export class UserService {
     if (!workspaceExists)
       throw new HttpException('Workspace not found', HttpStatus.NOT_FOUND);
 
-    const updated = await this.userModel.updateOne(
+    const updated = await this.userModel.findByIdAndUpdate(
       { _id: req.user.userId },
       { currentWorkspace: workspaceId },
+      { new: true },
     );
 
-    if (updated.modifiedCount === 1)
-      return { message: 'Current workspace set successfully' };
+    if (updated) return { message: 'Current workspace set successfully' };
 
     throw new HttpException(
       'Failed to set current workspace',
@@ -182,7 +230,7 @@ export class UserService {
     );
   }
 
-  async userExists(userId: string) {
+  async userExists(userId: string): Promise<[User | null, boolean]> {
     try {
       const user = await this.userModel.findOne({
         _id: userId,
@@ -190,7 +238,7 @@ export class UserService {
       });
 
       if (!user) {
-        return [user, false];
+        return [null, false];
       }
 
       return [user, true];

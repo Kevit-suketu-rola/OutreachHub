@@ -11,6 +11,8 @@ export class CreateWorkspaceDto {
 }
 
 export class UpdateWorkspaceDto {
+  _id?: string;
+
   name?: string;
 
   description?: string;
@@ -22,6 +24,7 @@ export class AddUserDto {
   userId: string;
   workspaceId: string;
   permissions: {
+    read?: boolean;
     write: boolean;
     allowAdd: boolean;
   };

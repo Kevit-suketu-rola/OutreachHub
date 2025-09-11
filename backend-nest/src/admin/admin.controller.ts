@@ -23,13 +23,4 @@ export class AdminController {
   async createAdmin(@Body() newadmin: CreateAdminDto) {
     return this.adminService.createAdmin(newadmin);
   }
-
-  //to be removed later
-  @Get()
-  @UseGuards(AdminGuard)
-  check() {
-    return {
-      message: 'Admin route is working',
-    };
-  }
 }

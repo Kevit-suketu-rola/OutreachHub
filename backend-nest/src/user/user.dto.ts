@@ -6,6 +6,12 @@ export class CreateUserDto {
     email: string;
     phoneNumber: number;
   };
+  workspaceId?: string;
+  permissions?: {
+    read: boolean;
+    write: boolean;
+    allowAdd: boolean;
+  };
 }
 
 export class UpdateUserDto {

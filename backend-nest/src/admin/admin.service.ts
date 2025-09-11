@@ -37,6 +37,7 @@ export class AdminService {
       if (alreadyLoggedIn) {
         return {
           message: 'Already logged in',
+          token: alreadyLoggedIn.token,
         };
       }
 
@@ -112,5 +113,17 @@ export class AdminService {
     } catch (error) {
       return { error };
     }
+  }
+  async adminExists(adminId: string) {
+    const admin = await this.adminModel.findOne({
+      _id: adminId,
+      isDeleted: false,
+    });
+
+    if (!admin) {
+      return [null, false];
+    }
+
+    return [admin, true];
   }
 }

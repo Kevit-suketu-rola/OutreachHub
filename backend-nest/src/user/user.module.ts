@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User, UserSchema } from './user.schema';
 import { WorkspaceModule } from 'src/workspace/workspace.module';
 import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
       }),
       inject: [ConfigService],
     }),
+    forwardRef(() => AdminModule),
     forwardRef(() => WorkspaceModule),
     forwardRef(() => WorkspaceUserModule),
   ],

@@ -11,6 +11,7 @@ import { Request } from 'express';
 import { Token } from '../token.schema';
 import { Model } from 'mongoose';
 import { WorkspaceUserService } from 'src/workspace-user/workspace-user.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class EditorGuard implements CanActivate {
@@ -18,6 +19,7 @@ export class EditorGuard implements CanActivate {
     private jwtService: JwtService,
     @InjectModel(Token.name) private tokenModel: Model<Token>,
     private workspaceUserService: WorkspaceUserService,
+    private readonly userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -43,14 +45,20 @@ export class EditorGuard implements CanActivate {
     if (!(isValid?.token === token) || !payload)
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
 
-    const workspaceId = request.body.workspaceId || request.params.workspaceId;
+    if (payload.adminId) return true;
 
-    const workspaceUser = await this.workspaceUserService.getWorkspaceUser(
+    const user = await this.userService.userExists(payload.userId);
+
+    const workspaceId =
+      request.params?.workspaceId ||
+      request.body?.workspaceId ||
+      user[0]?.currentWorkspace;
+
+    const res = await this.workspaceUserService.getWorkspaceUser(
       payload.userId,
-      workspaceId,
     );
     request['user'] = payload;
 
-    return !!workspaceUser?.permissions.write;
+    return !!res?.workspaceUser?.permissions.write;
   }
 }

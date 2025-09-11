@@ -12,7 +12,6 @@ import mongoose, { Model } from 'mongoose';
 import { CreateContactDto, UpdateContactDto } from './contact.dto';
 import { WorkspaceService } from 'src/workspace/workspace.service';
 import { UserService } from 'src/user/user.service';
-import { log } from 'util';
 
 @Injectable()
 export class ContactService {
@@ -20,6 +19,7 @@ export class ContactService {
     @InjectModel(Contact.name) private contactModel: Model<Contact>,
     @Inject(forwardRef(() => WorkspaceService))
     private readonly workspaceService: WorkspaceService,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
   ) {}
 
@@ -43,7 +43,20 @@ export class ContactService {
       creator: req.user.userId,
       isDeleted: false,
     });
-    return createdContact.save();
+
+    await createdContact.save();
+
+    return { message: 'Contact created successfully', contact: createdContact };
+  }
+
+  async getAllContacts() {
+    const contacts = await this.contactModel.find({
+      isDeleted: false,
+    });
+    if (!contacts) {
+      throw new HttpException('Contact not found', HttpStatus.NOT_FOUND);
+    }
+    return { message: 'fetched all contact', contacts };
   }
 
   async getContactById(id: string) {
@@ -54,7 +67,7 @@ export class ContactService {
     if (!contact) {
       throw new HttpException('Contact not found', HttpStatus.NOT_FOUND);
     }
-    return contact;
+    return { message: 'fetched contact', contact };
   }
 
   async getContactsByWorkspaceId(workspaceId: string) {
@@ -71,7 +84,7 @@ export class ContactService {
     if (!contacts) {
       throw new HttpException('No contacts found', HttpStatus.NOT_FOUND);
     }
-    return contacts;
+    return { message: 'fetched contacts of workspace', contacts };
   }
 
   async getContactsByCreator(req: any) {
@@ -90,8 +103,10 @@ export class ContactService {
     const contact = await this.contactModel.findOneAndUpdate(
       { _id: id, isDeleted: false },
       {
-        $set: updateContactDto.details,
-        $push: { tags: { $each: updateContactDto.tags } },
+        $set: {
+          ...updateContactDto.details,
+          tags: updateContactDto.tags,
+        },
       },
       {
         new: true,
@@ -100,7 +115,8 @@ export class ContactService {
 
     if (!contact)
       throw new HttpException('Contact not found', HttpStatus.NOT_FOUND);
-    return contact;
+
+    return { message: 'contact updated successfully', contact };
   }
 
   async delete(id: string) {

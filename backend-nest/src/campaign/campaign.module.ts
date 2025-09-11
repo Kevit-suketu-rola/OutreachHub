@@ -13,6 +13,7 @@ import {
 import { UserModule } from 'src/user/user.module';
 import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
 import { ContactModule } from 'src/contact/contact.module';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ContactModule } from 'src/contact/contact.module';
       inject: [ConfigService],
     }),
     forwardRef(() => UserModule),
+    forwardRef(() => AdminModule),
     forwardRef(() => ContactModule),
     forwardRef(() => WorkspaceUserModule),
   ],

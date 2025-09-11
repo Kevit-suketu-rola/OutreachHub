@@ -14,6 +14,7 @@ import { ContactService } from './contact.service';
 import { CreateContactDto, UpdateContactDto } from './contact.dto';
 import { EditorGuard } from 'src/auth-guard/user/editor.guard';
 import { UserGuard } from 'src/auth-guard/user/user.guard';
+import { AdminGuard } from 'src/auth-guard/admin/admin.guard';
 
 @Controller('contact')
 export class ContactController {
@@ -32,6 +33,12 @@ export class ContactController {
   @UseGuards(UserGuard)
   async getById(@Param('id') id: string) {
     return await this.contactService.getContactById(id);
+  }
+
+  @Get('all')
+  @UseGuards(AdminGuard)
+  async geetAll() {
+    return await this.contactService.getAllContacts();
   }
 
   @Get('workspace/:workspaceId')

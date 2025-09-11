@@ -7,6 +7,14 @@ import { Token, TokenSchema } from './auth-guard/token.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { AdminModule } from './admin/admin.module';
 import { Admin, AdminSchema } from './admin/admin.schema';
+import { UserModule } from './user/user.module';
+import { WorkspaceModule } from './workspace/workspace.module';
+import { CampaignModule } from './campaign/campaign.module';
+import { ContactModule } from './contact/contact.module';
+import { MessageTemplateModule } from './message-template/message-template.module';
+import { WorkspaceUserModule } from './workspace-user/workspace-user.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AwsS3Module } from './aws-s3/aws-s3.module';
 
 @Module({
   imports: [
@@ -37,7 +45,15 @@ import { Admin, AdminSchema } from './admin/admin.schema';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
     AdminModule,
+    UserModule,
+    WorkspaceModule,
+    CampaignModule,
+    ContactModule,
+    MessageTemplateModule,
+    WorkspaceUserModule,
+    AwsS3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

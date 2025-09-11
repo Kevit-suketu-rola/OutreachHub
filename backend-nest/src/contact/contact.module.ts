@@ -9,6 +9,7 @@ import { WorkspaceModule } from 'src/workspace/workspace.module';
 import { Token, TokenSchema } from 'src/auth-guard/token.schema';
 import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
 import { UserModule } from 'src/user/user.module';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from 'src/user/user.module';
     }),
     forwardRef(() => WorkspaceModule),
     forwardRef(() => UserModule),
+    forwardRef(() => AdminModule),
     forwardRef(() => WorkspaceUserModule),
   ],
   providers: [ContactService],

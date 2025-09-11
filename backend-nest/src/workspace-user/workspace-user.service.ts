@@ -17,6 +17,7 @@ export class WorkspaceUserService {
   constructor(
     @InjectModel(WorkspaceUser.name)
     private workspaceUserModel: Model<WorkspaceUser>,
+    @Inject(forwardRef(() => UserService))
     readonly userService: UserService,
     @Inject(forwardRef(() => WorkspaceService))
     private readonly workspaceService: WorkspaceService,
@@ -26,6 +27,7 @@ export class WorkspaceUserService {
     const userId = details.userId;
     const workspaceId = details.workspaceId;
     const permissions = details.permissions;
+    permissions.read = true;
 
     const validUser = await this.userService.userExists(userId);
     const validWorkspace =
@@ -81,6 +83,9 @@ export class WorkspaceUserService {
         isDeleted: false,
       },
       { isDeleted: true },
+      {
+        new: true,
+      },
     );
 
     if (workspaceUser)
@@ -105,10 +110,10 @@ export class WorkspaceUserService {
     const workspaceUsers = await this.workspaceUserModel
       .find(
         {
-          workspaceId,
+          workspaceId: workspaceId,
           isDeleted: false,
         },
-        { isDeleted: 0, workspaceId: 0 },
+        { isDeleted: 0 },
       )
       .populate('userId')
       .exec();
@@ -121,7 +126,20 @@ export class WorkspaceUserService {
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
+  async getWorkspacesForUser(userId: string) {
+    const workspaces = await this.workspaceUserModel
+      .find({
+        userId: userId,
+        isDeleted: false,
+      })
+      .populate('workspaceId', 'name');
 
+    if (workspaces.length === 0) {
+      throw new HttpException('No workspaces found', HttpStatus.NOT_FOUND);
+    } else {
+      return workspaces;
+    }
+  }
   async deleteWorkspaceUser(id: string, userFlag: boolean) {
     try {
       if (userFlag) {
@@ -147,12 +165,23 @@ export class WorkspaceUserService {
     }
   }
 
-  async getWorkspaceUser(userId: string, workspaceId: string) {
+  async getWorkspaceUser(userId: string) {
+    const user = await this.userService.userExists(userId);
+    const workspaceId = user[0]?.currentWorkspace;
+
     const workspaceUser = await this.workspaceUserModel.findOne({
       userId,
       workspaceId,
       isDeleted: false,
     });
-    return workspaceUser;
+    return { message: 'user fetched successfully', workspaceUser };
+  }
+
+  async getNoOfUsers(workspaceId: string) {
+    const noOfUsers = await this.workspaceUserModel.countDocuments({
+      workspaceId: workspaceId,
+      isDeleted: false,
+    });
+    return { userCount: noOfUsers };
   }
 }

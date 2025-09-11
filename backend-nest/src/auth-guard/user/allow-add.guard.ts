@@ -47,16 +47,14 @@ export class AllowAddGuard implements CanActivate {
       if (!(isValid?.token === token) || !payload)
         throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
 
-
       const workspaceId =
         request.body.workspaceId || request.params.workspaceId;
 
-      const workspaceUser = await this.workspaceUserService.getWorkspaceUser(
+      const res = await this.workspaceUserService.getWorkspaceUser(
         payload.userId,
-        workspaceId,
       );
 
-      return !!workspaceUser?.permissions.allowAdd;
+      return !!res?.workspaceUser?.permissions.allowAdd;
     } catch {
       throw new HttpException(
         'Invalid or expired token',

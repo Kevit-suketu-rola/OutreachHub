@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Workspace } from './workspace.schema';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from './workspace.dto';
 import { WorkspaceUserService } from 'src/workspace-user/workspace-user.service';
 import { ContactService } from 'src/contact/contact.service';
@@ -16,11 +16,9 @@ export class WorkspaceService {
 
   async allWorkspacesForAdmin() {
     try {
-      console.log('here');
-
       const workspaces = await this.workspaceModel.find(
         { isDeleted: false },
-        { isDeleted: 0 },
+        { isDeleted: 0, __v: 0 },
       );
       return { message: 'Got all workspaces', workspaces };
     } catch (error) {
@@ -30,22 +28,20 @@ export class WorkspaceService {
 
   async allWorkspacesForUser(req: any) {
     const userId = req.user.userId;
-    try {
-      //after userSchema is created, using populate
-      return { message: 'Got all workspaces for user' /*, workspaces*/ };
-    } catch (err) {
-      return { err: 'Failed to fetch workspaces for user' };
-    }
+    const workspaces =
+      await this.workspaceUserService.getWorkspacesForUser(userId);
+
+    return { message: 'Got all workspaces', workspaces };
   }
 
   async workspaceById(id: string, req: any) {
-    const workspace = await this.workspaceModel.findOne({
-      _id: id,
-      creator: req.user.userId,
-      isDeleted: false,
-    });
-
-    console.log(req.user.userId);
+    const workspace = await this.workspaceModel
+      .findOne({
+        _id: id,
+        creator: req.user.userId,
+        isDeleted: false,
+      })
+      .populate('creator', 'name');
 
     if (!workspace) {
       throw new HttpException('Workspace not found', HttpStatus.NOT_FOUND);
@@ -86,7 +82,6 @@ export class WorkspaceService {
     try {
       const workspace = await this.workspaceModel.findOne({
         _id: req.params.id,
-        creator: req.admin.userId,
         isDeleted: false,
       });
 
@@ -107,7 +102,6 @@ export class WorkspaceService {
     try {
       const workspace = await this.workspaceModel.findOne({
         _id: req.params.id,
-        creator: req.admin.adminId,
         isDeleted: false,
       });
 

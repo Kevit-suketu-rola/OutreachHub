@@ -13,15 +13,32 @@ import { CampaignService } from './campaign.service';
 import { EditorGuard } from 'src/auth-guard/user/editor.guard';
 import { CreateCampaignDto, UpdateCampaignDto } from './campaign.dto';
 import { UserGuard } from 'src/auth-guard/user/user.guard';
+import { AdminGuard } from 'src/auth-guard/admin/admin.guard';
+import { GeneralGuard } from 'src/auth-guard/general.guard';
 
 @Controller('campaign')
 export class CampaignController {
   constructor(private readonly campaignService: CampaignService) {}
 
-  @Post('create/:workspaceId')
+  @Get('by-id/:campaignId')
+  @UseGuards(GeneralGuard)
+  async getCampaignById(
+    @Param('campaignId') campaignId: string,
+    @Req() req: any,
+  ) {
+    return this.campaignService.getCampaignById(campaignId);
+  }
+
+  @Post('create')
   @UseGuards(EditorGuard)
   async create(@Req() req: any, @Body() createCampaignDto: CreateCampaignDto) {
     return this.campaignService.create(req, createCampaignDto);
+  }
+
+  @Get('all')
+  @UseGuards(AdminGuard)
+  async getAll() {
+    return this.campaignService.getAllCampaigns();
   }
 
   @Delete('delete/:campaignId')
@@ -45,31 +62,19 @@ export class CampaignController {
     return this.campaignService.getAllCampaignStatus();
   }
 
-  @Get('get/:campaignId')
-  @UseGuards(UserGuard)
-  async getCampaignById(
-    @Param('campaignId') campaignId: string,
-    @Req() req: any,
-  ) {
-    return this.campaignService.getCampaignById(campaignId, req.user.userId);
-  }
-
   @Get('all-of-user')
   @UseGuards(UserGuard)
-  async getAllCampaignsOfUser(
-    @Param('campaignId') campaignId: string,
-    @Req() req: any,
-  ) {
+  async getAllCampaignsOfUser(@Req() req: any) {
     return this.campaignService.getAllCampaignsOfUser(req.user.userId);
   }
 
-  @Get('all-of-workspace')
-  @UseGuards(UserGuard)
+  @Get('all-of-workspace/:workspaceId')
+  @UseGuards(GeneralGuard)
   async getAllCampaignsOfWorkspace(
-    @Param('campaignId') campaignId: string,
+    @Param('workspaceId') workspaceId: string,
     @Req() req: any,
   ) {
-    return this.campaignService.getAllCampaignsOfWorkspace(req.user.userId);
+    return this.campaignService.getAllCampaignsOfWorkspace(workspaceId);
   }
 
   @Get('contacts-by-campaign-tag/:campaignId')

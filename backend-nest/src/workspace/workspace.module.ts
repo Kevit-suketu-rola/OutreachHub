@@ -27,6 +27,7 @@ import { ContactModule } from 'src/contact/contact.module';
       inject: [ConfigService],
     }),
     AdminModule,
+    forwardRef(() => AdminModule),
     forwardRef(() => ContactModule),
     forwardRef(() => WorkspaceUserModule),
     forwardRef(() => UserModule),

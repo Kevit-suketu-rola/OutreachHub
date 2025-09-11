@@ -13,7 +13,6 @@ export class CreateContactDto {
 }
 
 export class UpdateContactDto {
-  workspaceId: string;
   details: {
     name?: string;
     profilePicture?: string;

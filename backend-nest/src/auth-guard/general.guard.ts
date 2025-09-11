@@ -1,8 +1,10 @@
 import {
   CanActivate,
   ExecutionContext,
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -12,14 +14,15 @@ import { Model } from 'mongoose';
 import { Token } from './token.schema';
 import { UserService } from 'src/user/user.service';
 import { AdminService } from 'src/admin/admin.service';
-import { log } from 'console';
 
 @Injectable()
 export class GeneralGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     @InjectModel(Token.name) private tokenModel: Model<Token>,
+    @Inject(forwardRef(() => AdminService))
     private adminService: AdminService,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
   ) {}
 

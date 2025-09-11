@@ -85,6 +85,17 @@ export class CampaignService {
     return { message: 'Campaign created successfully', campaign };
   }
 
+  async getAllCampaigns() {
+    const campaigns = await this.campaignModel.find(
+      { isDeleted: false },
+      { isDeleted: 0, __v: 0 },
+    );
+
+    if (!campaigns)
+      throw new HttpException('Contact not found', HttpStatus.NOT_FOUND);
+    return { message: 'fetched all campaigns', campaigns };
+  }
+
   async delete(campaignId: string) {
     const campaign: any = await this.campaignModel.findById(campaignId);
     if (!campaign) {
@@ -96,20 +107,20 @@ export class CampaignService {
   }
 
   async update(campaignId: string, updateCampaignDto: UpdateCampaignDto) {
-    const contact = await this.campaignModel.findOneAndUpdate(
-      { _id: campaignId, isDeleted: false },
+    const campaign = await this.campaignModel.findOneAndUpdate(
+      { _id: campaignId, isDeleted: false, status: 'Draft' },
       {
         $set: updateCampaignDto.details,
-        $push: { tags: { $each: updateCampaignDto.tags } },
+        tags: updateCampaignDto.tags,
       },
       {
         new: true,
       },
     );
 
-    if (!contact)
+    if (!campaign)
       throw new HttpException('Contact not found', HttpStatus.NOT_FOUND);
-    return contact;
+    return { message: 'campaign updated successfully', campaign };
   }
 
   async getAllCampaignStatus() {
@@ -120,24 +131,20 @@ export class CampaignService {
     return campaignStatus;
   }
 
-  async getCampaignById(campaignId: string, userId: string) {
-    const user: any = await this.userService.userExists(userId);
+  async getCampaignById(campaignId: string) {
+    const campaign = await this.campaignModel
+      .findOne(
+        { _id: campaignId, isDeleted: false },
+        {
+          isDeleted: 0,
+          __v: 0,
+        },
+      )
+      .populate('workspaceId', 'name')
+      .populate('templateId', 'title')
+      .populate('creator', 'name');
 
-    if (!user[0].currentWorkspace)
-      throw new HttpException(
-        'User does not have a current workspace',
-        HttpStatus.BAD_REQUEST,
-      );
-
-    const campaign = await this.campaignModel.findOne(
-      { _id: campaignId, isDeleted: false },
-      {
-        isDeleted: 0,
-        __v: 0,
-      },
-    );
-
-    return campaign;
+    return { message: 'campaign fetched successfully', campaign };
   }
 
   async getAllCampaignsOfUser(userId: string) {
@@ -157,20 +164,12 @@ export class CampaignService {
       },
     );
 
-    if (campaigns.length === 0)
-      throw new HttpException('No campaigns found', HttpStatus.NOT_FOUND);
-
-    return campaigns;
+    return { mesage: 'Got all campaigns of user', campaigns };
   }
 
-  async getAllCampaignsOfWorkspace(userId: string) {
-    const user: any = await this.userService.userExists(userId);
-    const workspaceId = user[0].currentWorkspace;
+  async getAllCampaignsOfWorkspace(workspaceId: string) {
     if (!workspaceId)
-      throw new HttpException(
-        'User does not have a current workspace',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Not Found', HttpStatus.BAD_REQUEST);
 
     const campaigns = await this.campaignModel.find(
       { workspaceId, isDeleted: false },
@@ -180,10 +179,9 @@ export class CampaignService {
       },
     );
 
-    if (campaigns.length === 0)
-      throw new HttpException('No campaigns found', HttpStatus.NOT_FOUND);
+    if (campaigns.length === 0) return { message: 'no campaigns', campaigns };
 
-    return campaigns;
+    return { message: 'Got all campaigns of workspace', campaigns };
   }
 
   async getAllContactsByCampaignTag(campaignId: string, userId: string) {
@@ -203,7 +201,7 @@ export class CampaignService {
     if (contacts.length === 0)
       throw new HttpException('No contacts found', HttpStatus.NOT_FOUND);
 
-    return contacts;
+    return { message: 'Got all contacts', contacts };
   }
 
   async launchCampaign(campaignId: string) {
@@ -220,6 +218,7 @@ export class CampaignService {
 
     if (campaign.status === 'Draft' && campaign.startDate <= now) {
       campaign.status = 'Running';
+      campaign.startDate = now;
       await campaign.save();
       return { message: 'Campaign launched successfully', campaign };
     } else if (campaign.status === 'Running' && campaign.endDate <= now) {
