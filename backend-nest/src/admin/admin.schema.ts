@@ -22,6 +22,9 @@ export class Admin {
 
   @Prop({ default: Date.now })
   joinDate: Date;
+
+  @Prop({ type: Boolean, default: false })
+  isDeleted: boolean;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
