@@ -6,7 +6,7 @@ export class ContactInfo {
   countryCode: string;
 
   @Prop()
-  phoneNumber: string;
+  phoneNumber: number;
 
   @Prop({
     required: true,
@@ -19,10 +19,9 @@ export class ContactInfo {
 
 @Schema({ _id: false })
 export class Permissions {
-  @Prop()
+  @Prop({ type: Boolean, default: false })
   write: boolean;
-
-  @Prop()
+  @Prop({ type: Boolean, default: false })
   allowAdd: boolean;
 }
 

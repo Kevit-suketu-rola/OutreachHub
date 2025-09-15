@@ -17,19 +17,16 @@ export class AdminService {
   ) {}
 
   async adminLogin(admin: AdminLoginDto) {
-    try {
-      const foundAdmin = await this.adminModel.findOne({
-        'contactInfo.email': admin.email,
-      });
+    const foundAdmin = await this.adminModel.findOne({
+      'contactInfo.email': admin.email,
+      
+    });
 
-      if (!foundAdmin)
-        throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
+    if (!foundAdmin)
+      throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
 
-      let hashedPass = foundAdmin.password;
-      let passwordMatch = bcrypt.compareSync(admin.password, hashedPass);
-
-      if (!passwordMatch)
-        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    let hashedPass = foundAdmin.password;
+    let passwordMatch = bcrypt.compareSync(admin.password, hashedPass);
 
       let alreadyLoggedIn = await this.tokenModel.findOne({
         userId: foundAdmin._id,
@@ -41,29 +38,24 @@ export class AdminService {
         };
       }
 
-      const token = await this.jwtService.signAsync(
-        {
-          adminId: foundAdmin._id,
-        },
-        {
-          expiresIn: '1h',
-        },
-      );
+    const token = await this.jwtService.signAsync(
+      {
+        adminId: foundAdmin._id,
+      },
+      {
+        expiresIn: '1h',
+      },
+    );
 
-      await this.tokenModel.create({
-        token,
-        userId: foundAdmin._id,
-      });
+    await this.tokenModel.create({
+      token,
+      userId: foundAdmin._id,
+    });
 
-      return {
-        message: 'Logged in successfully',
-        token,
-      };
-    } catch (error) {
-      return {
-        message: 'Login failed',
-      };
-    }
+    return {
+      message: 'Logged in successfully',
+      token,
+    };
   }
 
   async adminLogout(req: any) {
@@ -114,6 +106,7 @@ export class AdminService {
       return { error };
     }
   }
+
   async adminExists(adminId: string) {
     const admin = await this.adminModel.findOne({
       _id: adminId,
@@ -125,5 +118,6 @@ export class AdminService {
     }
 
     return [admin, true];
+
   }
 }
