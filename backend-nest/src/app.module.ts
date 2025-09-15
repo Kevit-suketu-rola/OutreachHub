@@ -15,6 +15,7 @@ import { MessageTemplateModule } from './message-template/message-template.modul
 import { WorkspaceUserModule } from './workspace-user/workspace-user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { CampaignMessageModule } from './campaign-message/campaign-message.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { AwsS3Module } from './aws-s3/aws-s3.module';
     UserModule,
     WorkspaceModule,
     CampaignModule,
+    CampaignMessageModule,
     ContactModule,
     MessageTemplateModule,
     WorkspaceUserModule,

@@ -28,5 +28,6 @@ import { ContactModule } from 'src/contact/contact.module';
   ],
   providers: [CampaignMessageService],
   controllers: [CampaignMessageController],
+  exports: [CampaignMessageService],
 })
 export class CampaignMessageModule {}

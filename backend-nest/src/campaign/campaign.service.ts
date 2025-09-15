@@ -13,6 +13,8 @@ import { MessageTemplate } from 'src/message-template/message-template.schema';
 import { UserService } from 'src/user/user.service';
 import { ContactService } from 'src/contact/contact.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { MessageTemplateService } from 'src/message-template/message-template.service';
+import { CampaignMessageService } from 'src/campaign-message/campaign-message.service';
 
 @Injectable()
 export class CampaignService {
@@ -23,8 +25,12 @@ export class CampaignService {
     private readonly messageTemplateModel: Model<MessageTemplate>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    @Inject(forwardRef(() => CampaignMessageService))
+    private readonly campaignMessageService: CampaignMessageService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
+    @Inject(forwardRef(() => MessageTemplateService))
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
   async create(req: any, createCampaignDto: CreateCampaignDto) {
@@ -184,18 +190,18 @@ export class CampaignService {
     return { message: 'Got all campaigns of workspace', campaigns };
   }
 
-  async getAllContactsByCampaignTag(campaignId: string, userId: string) {
-    const campaign: any = await this.campaignModel.findOne(
-      { _id: campaignId, isDeleted: false },
-      { tags: 1 },
-    );
+  async getAllContactsByCampaignTag(campaignId: string) {
+    const campaign: any = await this.campaignModel.findOne({
+      _id: campaignId,
+      isDeleted: false,
+    });
 
     if (!campaign)
       throw new HttpException('Campaign not found', HttpStatus.NOT_FOUND);
 
     const contacts = await this.contactService.filterContactByTags(
       campaign.tags,
-      userId,
+      campaign.workspaceId,
     );
 
     if (contacts.length === 0)
@@ -216,7 +222,26 @@ export class CampaignService {
 
     const now = new Date();
 
-    if (campaign.status === 'Draft' && campaign.startDate <= now) {
+    const contacts = await this.getAllContactsByCampaignTag(
+      campaign._id.toString(),
+    );
+    const template = await this.messageTemplateService.getTemplateById(
+      campaign.templateId,
+    );
+
+    const campaignMessages = contacts.contacts.map((contact) => ({
+      campaignId: campaign._id,
+      contactId: contact._id,
+      template: {
+        title: template.template.title,
+        templateImage: template.template.templateImage || '',
+        body: template.template.template,
+      },
+      isDeleted: false,
+    }));
+    await this.campaignMessageService.createCampaignMessage(campaignMessages);
+
+    if (campaign.status === 'Draft') {
       campaign.status = 'Running';
       campaign.startDate = now;
       await campaign.save();
@@ -224,22 +249,51 @@ export class CampaignService {
     } else if (campaign.status === 'Running' && campaign.endDate <= now) {
       campaign.status = 'Completed';
       await campaign.save();
-      return { message: 'Campaign completed', campaign };
+      return {
+        message: 'Campaign completed',
+        campaign,
+      };
     }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async updateCampaignStatuses() {
-    const now = new Date();
+  async autoLaunchCampaign() {
+    const today = new Date();
+    const todayStart = new Date(today.setHours(0, 0, 0, 0));
+    const todayEnd = new Date(today.setHours(23, 59, 59, 999));
 
-    await this.campaignModel.updateMany(
-      { status: 'Draft', startDate: { $lte: now } },
-      { $set: { status: 'Running' } },
-    );
-
-    await this.campaignModel.updateMany(
-      { status: 'Running', endDate: { $lte: now } },
-      { $set: { status: 'Completed' } },
-    );
+    const campaignsForToday = await this.campaignModel.find({
+      status: 'Draft',
+      isDeleted: false,
+      startDate: { $gte: todayStart, $lte: todayEnd },
+    });
+    if (campaignsForToday.length !== 0) {
+      await this.campaignModel.updateMany(
+        { status: 'Draft', startDate: { $gte: todayStart, $lte: todayEnd } },
+        { status: 'Running' },
+      );
+      for (const campaign of campaignsForToday) {
+        const contacts = await this.getAllContactsByCampaignTag(
+          campaign._id.toString(),
+        );
+        const template = await this.messageTemplateService.getTemplateById(
+          campaign.templateId.toString(),
+        );
+        const campaignMessages = contacts.contacts.map((contact) => ({
+          campaignId: campaign._id,
+          contactId: contact._id,
+          template: {
+            title: template.template.title,
+            templateImage: template.template.templateImage || '',
+            body: template.template.template,
+          },
+          isDeleted: false,
+        }));
+        await this.campaignMessageService.createCampaignMessage(
+          campaignMessages,
+        );
+      }
+    }
+    console.log('executed autoLaunchCampaign at', new Date().toISOString());
   }
 }

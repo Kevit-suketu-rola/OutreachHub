@@ -54,6 +54,10 @@ export class UserService {
         return {
           message: 'Already logged in',
           token: alreadyLoggedIn.token,
+          user: {
+            userId: user._id,
+            name: user.name,
+          },
         };
       }
 

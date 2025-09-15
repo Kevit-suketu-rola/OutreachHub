@@ -142,14 +142,7 @@ export class ContactService {
     );
   }
 
-  async filterContactByTags(tags: string[], userId: string) {
-    const user: any = await this.userService.userExists(userId);
-
-    if (!user[1])
-      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
-
-    const workspaceId = new mongoose.Types.ObjectId(user[0].currentWorkspace);
-
+  async filterContactByTags(tags: string[], workspaceId: string) {
     const contacts = await this.contactModel.find(
       {
         workspaceId: workspaceId,

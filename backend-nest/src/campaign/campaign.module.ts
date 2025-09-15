@@ -14,6 +14,8 @@ import { UserModule } from 'src/user/user.module';
 import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
 import { ContactModule } from 'src/contact/contact.module';
 import { AdminModule } from 'src/admin/admin.module';
+import { CampaignMessageModule } from 'src/campaign-message/campaign-message.module';
+import { MessageTemplateModule } from 'src/message-template/message-template.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { AdminModule } from 'src/admin/admin.module';
     forwardRef(() => UserModule),
     forwardRef(() => AdminModule),
     forwardRef(() => ContactModule),
+    forwardRef(() => CampaignMessageModule),
+    forwardRef(() => MessageTemplateModule),
     forwardRef(() => WorkspaceUserModule),
   ],
   providers: [CampaignService],

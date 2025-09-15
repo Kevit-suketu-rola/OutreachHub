@@ -79,13 +79,13 @@ export class CampaignController {
 
   @Get('contacts-by-campaign-tag/:campaignId')
   @UseGuards(UserGuard)
-  async getAllContactsByCampaignTag(
-    @Param('campaignId') campaignId: string,
-    @Req() req: any,
-  ) {
-    return this.campaignService.getAllContactsByCampaignTag(
-      campaignId,
-      req.user.userId,
-    );
+  async getAllContactsByCampaignTag(@Param('campaignId') campaignId: string) {
+    return this.campaignService.getAllContactsByCampaignTag(campaignId);
+  }
+
+  @Put('launch/:campaignId')
+  @UseGuards(EditorGuard)
+  async launchCampaign(@Param('campaignId') campaignId: string) {
+    return this.campaignService.launchCampaign(campaignId);
   }
 }
