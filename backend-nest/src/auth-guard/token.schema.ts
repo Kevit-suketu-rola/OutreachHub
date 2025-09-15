@@ -8,5 +8,9 @@ export class Token {
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId})
   userId: mongoose.Types.ObjectId;
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
 }
 export const TokenSchema = SchemaFactory.createForClass(Token);
