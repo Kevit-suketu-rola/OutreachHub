@@ -1,27 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import {
+  Box,
+  Chip,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
-  Chip,
-  Box,
-} from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { fetchAllWorkspacesOfUser } from "@/redux/slices/workspaceSlice";
-import { setCurrentWorkspace } from "@/redux/slices/userSlice";
-import { useNavigate } from "react-router-dom";
-import { LoaderCircle } from "../LoaderCircle";
+} from '@mui/material';
+
+import { setCurrentWorkspace } from '@/redux/slices/userSlice';
+import { fetchAllWorkspacesOfUser } from '@/redux/slices/workspaceSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+import { LoaderCircle } from '../LoaderCircle';
 
 const UserWorkspacesTable = () => {
-  const { workspaces, userWorkspacesLoading } = useSelector(
-    (state: RootState) => state.workspace
+  const { userWorkspaces, userWorkspacesLoading } = useSelector(
+    (state: RootState) => state.workspace,
   );
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -29,22 +34,19 @@ const UserWorkspacesTable = () => {
     dispatch(fetchAllWorkspacesOfUser());
   }, [dispatch]);
 
-  const [search, setSearch] = useState("");
-  const navigate = useNavigate();
-
-  const filteredData = workspaces.filter((row) =>
-    row?.workspaceId?.name
-      ? row.workspaceId.name.toLowerCase().includes(search.toLowerCase())
-      : false
+  const filteredData = userWorkspaces.filter(
+    (row) =>
+      typeof row?.workspaceId !== 'string' &&
+      row?.workspaceId?.name?.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSetWorkspace = (workspaceId: string, name: string) => {
     dispatch(setCurrentWorkspace({ workspaceId, name }));
-    setTimeout(() => navigate("/user/workspace"), 300);
+    setTimeout(() => navigate('/user/workspace'), 300);
   };
 
   return (
-    <Box sx={{ p: 2, margin: "auto" }}>
+    <Box sx={{ p: 2, margin: 'auto' }}>
       <TextField
         label="Search by Name"
         variant="filled"
@@ -76,27 +78,23 @@ const UserWorkspacesTable = () => {
                   <TableRow key={index} className="hover:bg-violet-100">
                     <TableCell>{row.workspaceId.name}</TableCell>
                     <TableCell>
-                      {Object.entries(row.permissions).map(
-                        ([permKey, permValue]) =>
-                          permValue ? (
-                            <Chip
-                              key={permKey}
-                              label={`${permKey}`}
-                              size="small"
-                              color={"default"}
-                              sx={{ mr: 0.5, borderRadius: "12px" }}
-                            />
-                          ) : null
+                      {Object.entries(row.permissions).map(([permKey, permValue]) =>
+                        permValue ? (
+                          <Chip
+                            key={permKey}
+                            label={`${permKey}`}
+                            size="small"
+                            color={'default'}
+                            sx={{ mr: 0.5, borderRadius: '12px' }}
+                          />
+                        ) : null,
                       )}
                     </TableCell>
                     <TableCell>
                       <button
                         className="w-full hover:text-violet-400"
                         onClick={() =>
-                          handleSetWorkspace(
-                            row.workspaceId._id,
-                            row.workspaceId.name
-                          )
+                          handleSetWorkspace(row.workspaceId._id, row.workspaceId.name)
                         }
                       >
                         Select

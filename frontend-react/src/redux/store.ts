@@ -1,18 +1,19 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
-import workspaceReducer from "./slices/workspaceSlice";
-import workspaceUserReducer from "./slices/workspaceUserSlice";
-import userReducer from "./slices/userSlice";
-import campaignReducer from "./slices/campaignSlice";
-import storage from "redux-persist/lib/storage";
-import { persistStore, persistReducer, PERSIST } from "redux-persist";
-import contactReducer from "./slices/contactSlice";
-import messageTemplateReducer from "./slices/messageTemplateSlice";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { PERSIST, persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+import authReducer from './slices/authSlice';
+import campaignReducer from './slices/campaignSlice';
+import contactReducer from './slices/contactSlice';
+import messageTemplateReducer from './slices/messageTemplateSlice';
+import userReducer from './slices/userSlice';
+import workspaceReducer from './slices/workspaceSlice';
+import workspaceUserReducer from './slices/workspaceUserSlice';
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
-  whitelist: ["auth", "user"],
+  whitelist: ['auth', 'user'],
 };
 
 const rootReducer = combineReducers({

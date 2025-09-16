@@ -1,4 +1,7 @@
-import type { RootState } from "@/redux/store";
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { NavLink, useLocation } from 'react-router-dom';
+
 import {
   IconAnalyze,
   IconBrandCampaignmonitor,
@@ -6,11 +9,11 @@ import {
   IconHttpConnect,
   IconNetwork,
   IconTemplate,
-} from "@tabler/icons-react";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
-import LogoutButton from "../auth/LogoutButton";
+} from '@tabler/icons-react';
+
+import type { RootState } from '@/redux/store';
+
+import LogoutButton from '../auth/LogoutButton';
 
 export default function AppNavbar() {
   const { isAdmin } = useSelector((state: RootState) => state.auth);
@@ -20,23 +23,23 @@ export default function AppNavbar() {
   const data = {
     navMain: isAdmin
       ? [
-          { title: "Dashboard", url: "", icon: IconAnalyze },
-          { title: "Workspaces", url: "workspaces", icon: IconNetwork },
+          { title: 'Dashboard', url: '', icon: IconAnalyze },
+          { title: 'Workspaces', url: 'workspaces', icon: IconNetwork },
         ]
       : [
-          { title: "Home", url: "", icon: IconNetwork },
+          { title: 'Home', url: '', icon: IconNetwork },
           {
-            title: "Campaigns",
-            url: "campaigns",
+            title: 'Campaigns',
+            url: 'campaigns',
             icon: IconBrandCampaignmonitor,
           },
-          { title: "Contacts", url: "contacts", icon: IconHttpConnect },
-          { title: "Templates", url: "templates", icon: IconTemplate },
+          { title: 'Contacts', url: 'contacts', icon: IconHttpConnect },
+          { title: 'Templates', url: 'templates', icon: IconTemplate },
         ],
     navSecondary: [
       {
-        title: "About",
-        url: "/about",
+        title: 'About',
+        url: '/about',
         icon: IconHelp,
       },
     ],
@@ -59,22 +62,18 @@ export default function AppNavbar() {
                 `flex items-center space-x-2 px-3 py-2 rounded-md font-medium transition-colors
                  ${
                    isActive
-                     ? "bg-indigo-100 text-indigo-700"
-                     : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                     ? 'bg-indigo-100 text-indigo-700'
+                     : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600'
                  }`
               }
               onClick={() => setMenuOpen(false)}
             >
               {Icon && <Icon className="w-5 h-5" />}
               <span>
-                {title + "nknk"}
-                {!isAdmin &&
-                  location.pathname !== "/user" &&
-                  title === "Home" && (
-                    <span className="ml-auto text-blue-500 font-bold">
-                      Switch Workspace
-                    </span>
-                  )}
+                {title + 'nknk'}
+                {!isAdmin && location.pathname !== '/user' && title === 'Home' && (
+                  <span className="ml-auto text-blue-500 font-bold">Switch Workspace</span>
+                )}
               </span>
             </NavLink>
           ))}
@@ -87,8 +86,8 @@ export default function AppNavbar() {
                 `flex items-center space-x-2 px-3 py-2 rounded-md font-medium transition-colors
                  ${
                    isActive
-                     ? "bg-indigo-100 text-indigo-700"
-                     : "text-gray-500 hover:bg-indigo-50 hover:text-indigo-600"
+                     ? 'bg-indigo-100 text-indigo-700'
+                     : 'text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'
                  }`
               }
               onClick={() => setMenuOpen(false)}
@@ -105,12 +104,7 @@ export default function AppNavbar() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {menuOpen ? (
               <path
                 strokeLinecap="round"
@@ -141,8 +135,8 @@ export default function AppNavbar() {
                   `flex items-center space-x-2 px-3 py-2 rounded-md font-medium transition-colors
                    ${
                      isActive
-                       ? "bg-indigo-100 text-indigo-700"
-                       : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                       ? 'bg-indigo-100 text-indigo-700'
+                       : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600'
                    }`
                 }
                 onClick={() => setMenuOpen(false)}
@@ -160,8 +154,8 @@ export default function AppNavbar() {
                   `flex items-center space-x-2 px-3 py-2 rounded-md font-medium transition-colors
                    ${
                      isActive
-                       ? "bg-indigo-100 text-indigo-700"
-                       : "text-gray-500 hover:bg-indigo-50 hover:text-indigo-600"
+                       ? 'bg-indigo-100 text-indigo-700'
+                       : 'text-gray-500 hover:bg-indigo-50 hover:text-indigo-600'
                    }`
                 }
                 onClick={() => setMenuOpen(false)}

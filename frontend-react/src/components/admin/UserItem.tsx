@@ -1,10 +1,12 @@
-import { addUser } from "@/redux/slices/workspaceUserSlice";
-import type { AppDispatch } from "@/redux/store";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { User } from '@/redux/slices/userSlice';
+import { addUser } from '@/redux/slices/workspaceUserSlice';
+import type { AppDispatch } from '@/redux/store';
 
 export const UserItem: React.FC<{
-  user: any;
+  user: User;
   workspaceId: string;
   onClose: () => void;
   incrementCount: () => void;
@@ -32,11 +34,11 @@ export const UserItem: React.FC<{
           userId: user._id,
           workspaceId,
           permissions,
-        })
+        }),
       );
       onClose();
-    } catch (e) {
-      alert("error adding user");
+    } catch {
+      alert('error adding user');
     }
   };
 
@@ -44,10 +46,10 @@ export const UserItem: React.FC<{
     <div className="group flex items-center justify-between p-3 border rounded hover:shadow transition">
       <div>
         <p className="font-semibold text-gray-800">{user.name}</p>
-        <p className="text-gray-600 text-sm">{user.contactInfo.email}</p>
+        <p className="text-gray-600 text-sm">{user.contactInfo?.email}</p>
         <p className="text-gray-600 text-sm">
-          {user.contactInfo.countryCode}
-          {user.contactInfo.phoneNumber}
+          {user.contactInfo?.countryCode}
+          {user.contactInfo?.phoneNumber}
         </p>
       </div>
 
@@ -58,11 +60,8 @@ export const UserItem: React.FC<{
         }}
         className="hidden group-hover:flex items-center space-x-3"
       >
-        {["write", "allowAdd"].map((perm, i) => (
-          <label
-            key={i}
-            className="flex items-center space-x-1 text-sm capitalize"
-          >
+        {['write', 'allowAdd'].map((perm, i) => (
+          <label key={i} className="flex items-center space-x-1 text-sm capitalize">
             <input
               type="checkbox"
               name={perm}
@@ -70,7 +69,7 @@ export const UserItem: React.FC<{
               onChange={handleCheckboxChange}
               className="accent-blue-600"
             />
-            <span>{perm.replace("allowAdd", "Allow Add")}</span>
+            <span>{perm.replace('allowAdd', 'Allow Add')}</span>
           </label>
         ))}
 

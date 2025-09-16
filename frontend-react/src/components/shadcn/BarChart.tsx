@@ -1,5 +1,8 @@
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { TrendingUp } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
   Card,
@@ -8,26 +11,29 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
-import { fetchAllUsers } from "@/redux/slices/userSlice";
+} from '@/components/ui/chart';
+import { fetchAllUsers } from '@/redux/slices/userSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
 
-export const description = "A bar chart";
+export const description = 'A bar chart';
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
+    label: 'Desktop',
+    color: 'var(--chart-1)',
   },
 } satisfies ChartConfig;
+
+type UsersChartData = {
+  month: number;
+  users: number;
+};
 
 export function UserBarChart() {
   const { users } = useSelector((state: RootState) => state.user);
@@ -37,20 +43,17 @@ export function UserBarChart() {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
-  const chartData: any = [];
+  const chartData: UsersChartData[] = [];
   users.map((user) => {
-    const month = new Date(user.joinDate).getMonth();
+    const month = new Date(user.joinDate || '').getMonth();
 
-    const idx = chartData.findIndex((item: any) => item.month === month);
-    if (idx !== -1) {
-      chartData[idx].users += 1;
-    } else {
-      chartData.push({ month, users: 1 });
-    }
+    const idx = chartData.findIndex((item: UsersChartData) => item.month === month);
+    if (chartData[idx]) chartData[idx].users += 1;
+    else chartData.push({ month, users: 1 });
     return 0;
   });
 
-  chartData.sort((a: any, b: any) => a.month - b.month);
+  chartData.sort((a: UsersChartData, b: UsersChartData) => a.month - b.month);
 
   return (
     <Card className="sm:w-[50%]">
@@ -69,27 +72,24 @@ export function UserBarChart() {
               axisLine={false}
               tickFormatter={(month) => {
                 const months = [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
+                  'Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'May',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep',
+                  'Oct',
+                  'Nov',
+                  'Dec',
                 ];
-                return months[month - 1];
+                return months[month - 1] || 'unknown';
               }}
             />
 
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="users" fill="rgba(70,70,250,0.7)" radius={8} />
           </BarChart>
         </ChartContainer>

@@ -1,30 +1,14 @@
-import React from "react";
+import React from 'react';
+
+import { Campaign } from '@/redux/slices/campaignSlice';
 
 interface Props {
   onClose: () => void;
-  data: Record<string, any>;
+  data: Campaign;
   loading?: boolean;
 }
 
-export const CampaignDetailsModal: React.FC<Props> = ({
-  onClose,
-  data,
-  loading,
-}) => {
-  // const renderField = (key: string, value: any) => {
-  //   if (typeof value === "object" && value !== null && "name" in value) {
-  //     return value.name;
-  //   } else if (typeof value === "object" && "$date" in value) {
-  //     return new Date(value.$date).toLocaleString();
-  //   } else if (Array.isArray(value)) {
-  //     return value.join(", ");
-  //   } else if (typeof value === "boolean") {
-  //     return value ? "Yes" : "No";
-  //   } else if (typeof value === "object" && value !== null) {
-  //     return JSON.stringify(value, null, 2);
-  //   }
-  //   return value?.toString();
-  // };
+export const CampaignDetailsModal: React.FC<Props> = ({ onClose, data, loading }) => {
   const details = formatCampaignDetails(data);
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-xl bg-opacity-30 flex items-center justify-center z-50">
@@ -48,17 +32,17 @@ export const CampaignDetailsModal: React.FC<Props> = ({
               <div key={label} className="flex items-start mb-2">
                 <span className="w-40 text-gray-900 font-bold">{label}:</span>
 
-                {label === "Tags" ? (
+                {label === 'Tags' ? (
                   <div className="flex flex-wrap gap-2">
                     {value
                       .substring(1, value.length - 1)
-                      .split(",")
+                      .split(',')
                       .map((tag: string, i: number) => (
                         <span
                           key={i}
                           className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium"
                         >
-                          {tag.trim().replace(/"/g, "")}
+                          {tag.trim().replace(/"/g, '')}
                         </span>
                       ))}
                   </div>
@@ -73,19 +57,19 @@ export const CampaignDetailsModal: React.FC<Props> = ({
     </div>
   );
 };
-const formatCampaignDetails = (campaign: Record<string, any>) => {
-  const hiddenKeys = ["_id", "lastModifiedBy"];
+const formatCampaignDetails = (campaign: Campaign) => {
+  const hiddenKeys = ['_id', 'lastModifiedBy'];
 
   const keyToLabelMap: Record<string, string> = {
-    workspaceId: "Workspace",
-    creator: "Creator",
-    templateId: "Template",
-    name: "Name",
-    tags: "Tags",
-    status: "Status",
-    startDate: "Start Date",
-    endDate: "End Date",
-    creationDate: "Created At",
+    workspaceId: 'Workspace',
+    creator: 'Creator',
+    templateId: 'Template',
+    name: 'Name',
+    tags: 'Tags',
+    status: 'Status',
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    creationDate: 'Created At',
   };
 
   const formatted: Record<string, string> = {};
@@ -94,32 +78,32 @@ const formatCampaignDetails = (campaign: Record<string, any>) => {
     if (hiddenKeys.includes(key)) continue;
 
     const label = keyToLabelMap[key] || key;
-    const value = campaign[key];
+    const value = campaign[key as keyof Campaign];
 
     let displayValue: string;
 
-    if (typeof value === "object" && value !== null) {
-      if ("name" in value) {
+    if (typeof value === 'object' && value !== null) {
+      if ('name' in value) {
         displayValue = value.name;
-      } else if ("title" in value) {
+      } else if ('title' in value) {
         displayValue = value.title;
-      } else if ("$date" in value) {
-        displayValue = new Date(value.$date).toLocaleString();
+      } else if ('$date' in value) {
+        displayValue = new Date(value.$date as string).toLocaleString();
       } else {
         displayValue = JSON.stringify(value, null, 2);
       }
     } else if (Array.isArray(value)) {
       displayValue = value.toString();
-    } else if (typeof value === "string" && Date.parse(value)) {
-      displayValue = new Date(value).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
+    } else if (typeof value === 'string' && Date.parse(value)) {
+      displayValue = new Date(value).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
       });
-    } else if (typeof value === "boolean") {
-      displayValue = value ? "Yes" : "No";
+    } else if (typeof value === 'boolean') {
+      displayValue = value ? 'Yes' : 'No';
     } else {
-      displayValue = value?.toString() || "-";
+      displayValue = value?.toString() || '-';
     }
 
     formatted[label] = displayValue;

@@ -1,52 +1,51 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL } from "./authSlice";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/contact`,
-  timeout: 2000,
-  headers: { "Content-Type": "application/json" },
-});
+import { createAxiosInstance } from './authSlice';
+
+export const axiosInstance = createAxiosInstance('contact');
 
 export const fetchAllContacts = createAsyncThunk(
-  "admin/fetchAllContacts",
+  'admin/fetchAllContacts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/all", {
+      const response = await axiosInstance.get('/all', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
       return { contacts: response.data.contacts };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const fetchContactsOfWorkspace = createAsyncThunk(
-  "user/fetchContactsOfWorkspace",
+  'user/fetchContactsOfWorkspace',
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/workspace/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
 
       return { contacts: response.data.contacts };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const editContact = createAsyncThunk(
-  "user/editContact",
+  'user/editContact',
   async (
-    data: { id: string; update: { details: any; tags: string[] } },
-    { rejectWithValue }
+    data: {
+      id: string | undefined;
+      update: { details: { name: string; jobTitle: string; company: string }; tags: string[] };
+    },
+    { rejectWithValue },
   ) => {
     try {
       const response = await axiosInstance.put(
@@ -54,81 +53,78 @@ export const editContact = createAsyncThunk(
         { ...data.update },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
 
       return { contact: response.data.contact };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const createContact = createAsyncThunk(
-  "user/createContact",
-  async (
-    contact: {
-      name: string;
-      contactInfo: {
-        countryCode: string;
-        email: string;
-        phoneNumber: number;
-      };
-      profilePicture?: string;
-      jobTitle: string;
-      company: string;
-      tags: string[];
-      workspaceId: string;
-    },
-    { rejectWithValue }
-  ) => {
+  'user/createContact',
+  async (contact: Contact, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
         `/create`,
         { ...contact },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
       if (response.status == 400) {
-        alert("Error with workspace or Name must be unique");
+        alert('Error with workspace or Name must be unique');
         return { contact: null };
       }
       return { contact: response.data.contact };
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Creation failed"
-      );
+    } catch {
+      return rejectWithValue('Creation failed');
     }
-  }
+  },
 );
 
 export const deleteContact = createAsyncThunk(
-  "user/deleteContact",
+  'user/deleteContact',
   async (id: string, { rejectWithValue }) => {
     try {
       await axiosInstance.delete(`/delete/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
 
       return { id };
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Deletion failed"
-      );
+    } catch {
+      return rejectWithValue('Deletion failed');
     }
-  }
+  },
 );
 
+export type Contact = {
+  _id?: string;
+  creator?: string;
+  name: string;
+  contactInfo: {
+    countryCode: string;
+    email: string;
+    phoneNumber: number;
+  };
+  profilePicture?: string;
+  jobTitle: string;
+  company: string;
+  tags: string[];
+  workspaceId?: string;
+};
+
 interface ContactState {
-  contacts: any[];
-  contact: any;
+  contacts: Contact[];
+  contact: Contact | null;
   loading: boolean;
   error: string | null;
 }
@@ -141,7 +137,7 @@ const initialState: ContactState = {
 };
 
 const ContactSlice = createSlice({
-  name: "contacts",
+  name: 'contacts',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -203,9 +199,7 @@ const ContactSlice = createSlice({
       })
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
-        state.contacts = state.contacts.filter(
-          (u) => u._id !== action.payload.id
-        );
+        state.contacts = state.contacts.filter((u) => u._id !== action.payload.id);
       })
       .addCase(deleteContact.rejected, (state, action) => {
         state.loading = false;

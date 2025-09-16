@@ -1,24 +1,30 @@
-import { useForm } from "react-hook-form";
-import TagInput from "../workspace/TagInput";
-import { fetchMessageTemplates } from "@/redux/slices/messageTemplateSlice";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 
-type CampaignFormValues = {
+import { Campaign } from '@/redux/slices/campaignSlice';
+import { MessageTemplate, fetchMessageTemplates } from '@/redux/slices/messageTemplateSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+import TagInput from '../workspace/TagInput';
+
+export type CampaignFormValues = {
   _id?: string;
   name: string;
   tags: string[];
   startDate: Date | string | null;
   endDate: Date | string | null;
   templateId?: string;
+  status?: 'Draft' | 'Running' | 'Completed';
+  workspaceId?: string;
+  creationDate?: string;
 };
 
 type Props = {
-  templates: any[];
-  campaign: CampaignFormValues;
+  templates: MessageTemplate[];
+  campaign: Campaign;
   onClose: () => void;
-  onSubmit: (data: CampaignFormValues) => void;
+  onSubmit: (data: Campaign) => void;
 };
 
 export const UpdateCampaignModal: React.FC<Props> = ({
@@ -33,16 +39,14 @@ export const UpdateCampaignModal: React.FC<Props> = ({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CampaignFormValues>({
+  } = useForm<Campaign>({
     defaultValues: {
-      ...campaign,
-      templateId: campaign.templateId || "",
-      startDate: campaign.startDate
-        ? new Date(campaign.startDate).toISOString().split("T")[0]
-        : "",
-      endDate: campaign.endDate
-        ? new Date(campaign.endDate).toISOString().split("T")[0]
-        : "",
+      _id: campaign._id || '',
+      name: campaign.name || '',
+      tags: campaign.tags || [],
+      startDate: campaign.startDate || '',
+      endDate: campaign.endDate || '',
+      templateId: (campaign.templateId as string) || '',
     },
   });
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
@@ -50,7 +54,7 @@ export const UpdateCampaignModal: React.FC<Props> = ({
 
   useEffect(() => {
     dispatch(fetchMessageTemplates(currentWorkspace?.id));
-  }, [dispatch]);
+  }, [currentWorkspace, dispatch]);
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center">
@@ -62,33 +66,25 @@ export const UpdateCampaignModal: React.FC<Props> = ({
           &times;
         </button>
 
-        <h2 className="text-2xl font-semibold mb-6">
-          {campaign._id ? "Edit" : "Create"} Campaign
-        </h2>
+        <h2 className="text-2xl font-semibold mb-6">{campaign._id ? 'Edit' : 'Create'} Campaign</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
             <input
               type="text"
-              {...register("name", { required: "Name is required" })}
+              {...register('name', { required: 'Name is required' })}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
 
           {/* Message Template Selector */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Message Template
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Message Template</label>
             <select
-              {...register("templateId", { required: "Template is required" })}
+              {...register('templateId', { required: 'Template is required' })}
               className="w-full border border-gray-300 rounded-md px-3 py-2"
             >
               <option value="">Select a template</option>
@@ -102,39 +98,29 @@ export const UpdateCampaignModal: React.FC<Props> = ({
 
           {/* Start Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Start Date
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Start Date</label>
             <input
               type="date"
-              {...register("startDate", { required: "Start date is required" })}
+              {...register('startDate', { required: 'Start date is required' })}
               className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
-            {errors.startDate && (
-              <p className="text-red-500 text-sm">{errors.startDate.message}</p>
-            )}
+            {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate.message}</p>}
           </div>
 
           {/* End Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              End Date
-            </label>
+            <label className="block text-sm font-medium text-gray-700">End Date</label>
             <input
               type="date"
-              {...register("endDate", { required: "End date is required" })}
+              {...register('endDate', { required: 'End date is required' })}
               className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
-            {errors.endDate && (
-              <p className="text-red-500 text-sm">{errors.endDate.message}</p>
-            )}
+            {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate.message}</p>}
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tags
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
             <TagInput name="tags" watch={watch} setValue={setValue} />
           </div>
 

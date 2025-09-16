@@ -1,6 +1,11 @@
-import * as React from "react";
-import { useFormContext } from "react-hook-form";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
+
+import axios from 'axios';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   FormControl,
   FormDescription,
@@ -8,49 +13,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import axios from "axios";
-import { BASE_URL } from "@/redux/slices/authSlice";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { BASE_URL } from '@/redux/slices/authSlice';
 
 interface FileUploadFieldProps {
   name: string;
   label: string;
   description?: string;
-  watch: any;
-  setValue: any;
 }
 
-export function FileUploadField({
-  name,
-  label,
-  description,
-  watch,
-  setValue,
-}: FileUploadFieldProps) {
-  const { control } = useFormContext();
+export function FileUploadField({ name, label, description }: FileUploadFieldProps) {
+  const { control, watch, setValue } = useFormContext();
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
-  const token = localStorage.getItem("user-token") || "unauthorized";
+  const token = localStorage.getItem('user-token') || 'unauthorized';
 
-  const currentImageUrl = watch(name);
+  const currentImageUrl: string = watch(name);
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     setIsUploading(true);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
 
     try {
       const response = await axios.post(`${BASE_URL}/aws-s3/image`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
         timeout: 10000,
@@ -59,10 +51,10 @@ export function FileUploadField({
       const imageUrl = response.data.url;
 
       setValue(name, imageUrl, { shouldValidate: true });
-      toast.success("Image uploaded successfully!");
+      toast.success('Image uploaded successfully!');
     } catch (error) {
-      console.error("File upload failed:", error);
-      toast.error("File upload failed.");
+      console.error('File upload failed:', error);
+      toast.error('File upload failed.');
     } finally {
       setIsUploading(false);
     }
@@ -71,7 +63,7 @@ export function FileUploadField({
   return (
     <FormField
       control={control}
-      name={name}
+      name={name as string}
       render={() => (
         <FormItem>
           <FormLabel>{label}</FormLabel>

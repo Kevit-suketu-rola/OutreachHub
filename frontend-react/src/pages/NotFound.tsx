@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const NotFound: React.FC = () => {
   return (
@@ -21,8 +21,8 @@ export const NotFound: React.FC = () => {
       <div className="flex-grow flex flex-col justify-center items-center text-center px-4">
         <h1 className="text-5xl font-extrabold mb-4">404 - Page Not Found</h1>
         <p className="text-lg mb-6 max-w-xl">
-          Oops! The page you're looking for doesn't exist or has been moved. Try
-          heading back to the homepage.
+          Oops! The page you're looking for doesn't exist or has been moved. Try heading back to the
+          homepage.
         </p>
         <Link
           to="/"
@@ -34,4 +34,3 @@ export const NotFound: React.FC = () => {
     </div>
   );
 };
-

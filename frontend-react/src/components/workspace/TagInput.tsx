@@ -1,38 +1,49 @@
-import React, { useState } from "react";
-import type { UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { KeyboardEventHandler, useState } from 'react';
+import type { FieldValues, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import type { Path, PathValue } from 'react-hook-form';
 
-interface TagInputProps {
-  name: string;
-  watch: UseFormWatch<any>;
-  setValue: UseFormSetValue<any>;
+interface TagInputProps<TForm extends FieldValues> {
+  name: Path<TForm>;
+  watch: UseFormWatch<TForm>;
+  setValue: UseFormSetValue<TForm>;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ name, watch, setValue }) => {
-  const tags: string[] = watch(name);
-  const [inputValue, setInputValue] = useState("");
+const TagInput = <TForm extends FieldValues>({ name, watch, setValue }: TagInputProps<TForm>) => {
+  // const tags = (watch(name) as PathValue<TForm, typeof name>) || [];
 
-  const handleKeyDown = (e: any) => {
-    if (e.key === " " || e.key === "Enter") {
+  const getTags = (): string[] => {
+    const watchedValue = watch(name);
+    return Array.isArray(watchedValue)
+      ? watchedValue.filter((item: unknown) => typeof item === 'string')
+      : [];
+  };
+  const currentTags = getTags();
+
+  const [inputValue, setInputValue] = useState('');
+
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       const trimmed = inputValue.trim();
-      if (trimmed && !tags.includes(trimmed)) {
-        setValue(name, [...tags, trimmed]);
-        setInputValue("");
+      if (trimmed && !currentTags.includes(trimmed)) {
+        setValue(name, [...currentTags, trimmed] as PathValue<TForm, typeof name>);
+        setInputValue('');
       }
+      return;
     }
   };
 
   const removeTag = (tagToRemove: string) => {
     setValue(
       name,
-      tags.filter((tag) => tag !== tagToRemove)
+      currentTags.filter((tag) => tag !== tagToRemove) as PathValue<TForm, typeof name>,
     );
   };
 
   return (
     <div>
       <div className="flex flex-wrap gap-2 mb-2">
-        {tags.map((tag, index) => (
+        {currentTags.map((tag, index) => (
           <button
             key={index}
             type="button"
@@ -60,4 +71,5 @@ const TagInput: React.FC<TagInputProps> = ({ name, watch, setValue }) => {
     </div>
   );
 };
+
 export default TagInput;

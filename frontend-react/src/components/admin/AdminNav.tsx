@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../redux/store";
-import { logoutAdmin } from "../../redux/slices/authSlice";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
+
+import { Menu, X } from 'lucide-react';
+
+import { logoutAdmin } from '../../redux/slices/authSlice';
+import type { AppDispatch } from '../../redux/store';
 
 export const AdminNav = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -14,9 +16,9 @@ export const AdminNav = () => {
     const resultAction = await dispatch(logoutAdmin());
 
     if (logoutAdmin.fulfilled.match(resultAction)) {
-      navigate("/");
+      navigate('/');
     } else {
-      alert("Error logging in: " + resultAction.payload);
+      alert('Error logging in: ' + resultAction.payload);
     }
   };
 
@@ -29,7 +31,7 @@ export const AdminNav = () => {
           <NavLink
             to="/admin/workspaces"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'
             }
           >
             Workspaces
@@ -37,7 +39,7 @@ export const AdminNav = () => {
           <NavLink
             to="/admin/users"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive ? 'text-blue-600 font-semibold' : 'hover:text-blue-600'
             }
           >
             User Management

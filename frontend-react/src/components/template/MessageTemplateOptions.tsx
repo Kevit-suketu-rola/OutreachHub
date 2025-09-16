@@ -1,11 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from 'react';
+
+import { MessageTemplate } from '@/redux/slices/messageTemplateSlice';
 
 export const MessageTemplateOptions = ({
   template,
   onEdit,
   onDelete,
 }: {
-  template: any;
+  template: MessageTemplate;
   onEdit: () => void;
   onDelete: (id: string) => void;
 }) => {
@@ -18,11 +20,11 @@ export const MessageTemplateOptions = ({
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  if (localStorage.getItem("write") === "false") return null;
+  if (localStorage.getItem('write') === 'false') return null;
 
   return (
     <div className="absolute top-2 right-2" ref={menuRef}>
@@ -46,7 +48,7 @@ export const MessageTemplateOptions = ({
           </button>
           <button
             onClick={() => {
-              onDelete(template._id);
+              onDelete(template._id || '');
               setOpen(false);
             }}
             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"

@@ -1,11 +1,13 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/redux/store";
-import { CampaignsTable } from "../campaign/CampaignsTable";
-import { UserCampaignsChart } from "./UserCampaignsChart";
-import { UserSectionCards } from "./UserSectionCards";
-import { fetchAWorkspaceUser } from "@/redux/slices/workspaceUserSlice";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { fetchAWorkspaceUser } from '@/redux/slices/workspaceUserSlice';
+import type { AppDispatch } from '@/redux/store';
+
+import { CampaignsTable } from '../campaign/CampaignsTable';
+import { UserCampaignsChart } from './UserCampaignsChart';
+import { UserSectionCards } from './UserSectionCards';
 
 export const UserDashboard = () => {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ export const UserDashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!localStorage.getItem("user-token")) navigate("/");
+    if (!localStorage.getItem('user-token')) navigate('/');
   }, []);
 
   return (

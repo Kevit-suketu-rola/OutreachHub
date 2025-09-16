@@ -1,46 +1,40 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL } from "./authSlice";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/user`,
-  timeout: 2000,
-  headers: { "Content-Type": "application/json" },
-});
+import { createAxiosInstance } from './authSlice';
+import { Workspace } from './workspaceSlice';
+
+export const axiosInstance = createAxiosInstance('user');
 
 export const fetchAllUsers = createAsyncThunk(
-  "admin/fetchAllUsers",
+  'admin/fetchAllUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/all", {
+      const response = await axiosInstance.get('/all', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       return { users: response.data.users };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
-export const fetchAUser = createAsyncThunk(
-  "admin/fetchAUser",
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(`/by-id/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+export const fetchAUser = createAsyncThunk('admin/fetchAUser', async (id, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get(`/by-id/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
 
-      return { user: response.data.user };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
-    }
+    return { user: response.data.user };
+  } catch {
+    return rejectWithValue('Fetch failed');
   }
-);
+});
 export const editUser = createAsyncThunk(
-  "common/editUser",
+  'common/editUser',
   async (
     user: {
       _id: string;
@@ -48,7 +42,7 @@ export const editUser = createAsyncThunk(
       description: string;
       tags: string[];
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await axiosInstance.put(
@@ -57,18 +51,17 @@ export const editUser = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${
-              localStorage.getItem("token") ||
-              localStorage.getItem("user-token")
+              localStorage.getItem('token') || localStorage.getItem('user-token')
             }`,
           },
-        }
+        },
       );
 
       return { user: response.data.user };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 interface createUser {
@@ -88,7 +81,7 @@ interface createUser {
 }
 
 export const createUser = createAsyncThunk(
-  "common/createUser",
+  'common/createUser',
   async (data: createUser, { rejectWithValue }) => {
     const user: createUser = {
       name: data.name,
@@ -101,7 +94,11 @@ export const createUser = createAsyncThunk(
     };
     if (data.workspaceId) {
       user.workspaceId = data.workspaceId;
-      user.permissions = data.permissions;
+      user.permissions = data.permissions || {
+        read: false,
+        write: false,
+        allowAdd: false,
+      };
     }
     try {
       const response = await axiosInstance.post(
@@ -110,46 +107,55 @@ export const createUser = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${
-              localStorage.getItem("token") ||
-              localStorage.getItem("user-token")
+              localStorage.getItem('token') || localStorage.getItem('user-token')
             }`,
           },
-        }
+        },
       );
 
       return { user: response.data.user };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const setCurrentWorkspace = createAsyncThunk(
-  "user/setCurrentWorkspace",
-  async (
-    { workspaceId, name }: { workspaceId: string; name: string },
-    { rejectWithValue }
-  ) => {
+  'user/setCurrentWorkspace',
+  async ({ workspaceId, name }: { workspaceId: string; name: string }, { rejectWithValue }) => {
     try {
       await axiosInstance.post(
-        "/set-current-workspace",
+        '/set-current-workspace',
         { workspaceId: workspaceId },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
       return { id: workspaceId, name: name };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
+export type User = {
+  _id: string;
+  name: string;
+  password?: string;
+  contactInfo?: {
+    email: string;
+    countryCode: string;
+    phoneNumber: number;
+  };
+  currentWorkspace?: string | Workspace;
+  joinDate?: Date;
+};
+
 interface UserState {
-  users: any[];
-  user: any;
+  users: User[];
+  user: User;
   currentWorkspace: { id: string; name: string } | null;
   userLoading: boolean;
   error: string | null;
@@ -157,14 +163,14 @@ interface UserState {
 
 const initialState: UserState = {
   users: [],
-  user: {},
+  user: {} as User,
   currentWorkspace: null,
   userLoading: false,
   error: null,
 };
 
 const UserSlice = createSlice({
-  name: "users",
+  name: 'users',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

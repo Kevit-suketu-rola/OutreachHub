@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Contact } from '@/redux/slices/contactSlice';
 
 interface MenuOption {
   label: string;
@@ -7,19 +9,15 @@ interface MenuOption {
 }
 
 interface ContactsProps {
-  contact: any;
+  contact: Contact;
   onEdit: () => void;
   onDelete: (id: string) => void;
 }
 
-export const ContactOptions: React.FC<ContactsProps> = ({
-  contact,
-  onEdit,
-  onDelete,
-}) => {
+export const ContactOptions: React.FC<ContactsProps> = ({ contact, onEdit, onDelete }) => {
   const menuOptions: MenuOption[] = [
-    { label: "Edit", onClick: () => onEdit() },
-    { label: "Delete", onClick: () => onDelete(contact._id) },
+    { label: 'Edit', onClick: () => onEdit() },
+    { label: 'Delete', onClick: () => onDelete(contact._id || '') },
   ];
 
   const [open, setOpen] = useState(false);
@@ -35,16 +33,16 @@ export const ContactOptions: React.FC<ContactsProps> = ({
 
   useEffect(() => {
     if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [open]);
 
-  if (localStorage.getItem("write") == "false") return null;
+  if (localStorage.getItem('write') == 'false') return null;
 
   return (
     <div className="relative inline-block" ref={menuRef}>

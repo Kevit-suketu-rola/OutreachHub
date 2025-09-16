@@ -1,27 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { ContactOptions } from "./ContactOptions";
-import type { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
-import { fetchAWorkspaceUser } from "@/redux/slices/workspaceUserSlice";
-import { UpdateContactModal } from "./UpdateContactModal";
-import { deleteContact, editContact } from "@/redux/slices/contactSlice";
-import { IconMail, IconPhone } from "@tabler/icons-react";
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-export type Contact = {
-  _id: string;
-  workspaceId: string;
-  creator: string;
-  name: string;
-  profilePicture: string;
-  contactInfo: {
-    email: string;
-    countryCode: string;
-    phoneNumber: number;
-  };
-  company: string;
-  jobTitle: string;
-  tags: string[];
-};
+import { IconMail, IconPhone } from '@tabler/icons-react';
+
+import { Contact, deleteContact, editContact } from '@/redux/slices/contactSlice';
+import { fetchAWorkspaceUser } from '@/redux/slices/workspaceUserSlice';
+import type { AppDispatch } from '@/redux/store';
+
+import { ContactOptions } from './ContactOptions';
+import { UpdateContactModal } from './UpdateContactModal';
 
 type ContactCardProps = {
   contact: Contact;
@@ -33,7 +20,7 @@ export const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
 
   useEffect(() => {
     dispatch(fetchAWorkspaceUser());
-  }, []);
+  }, [dispatch]);
 
   const onEdit = () => {
     setOpenUpdate(true);
@@ -43,7 +30,21 @@ export const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
     dispatch(deleteContact(id));
   };
 
-  const HandleUpdate = (data: any) => {
+  type SubmitData = {
+    _id?: string;
+    name: string;
+    contactInfo: {
+      email: string;
+      countryCode: string;
+      phoneNumber: number;
+    };
+    jobTitle: string;
+    company: string;
+    profilePicture?: string;
+    tags: string[];
+  };
+
+  const HandleUpdate = (data: SubmitData): void => {
     const structData = {
       id: data._id,
       update: {
@@ -83,13 +84,13 @@ export const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
         <p className="text-sm text-gray-600">
           <strong className="hidden sm:inline">
             <IconMail className="w-5 inline" />
-          </strong>{" "}
+          </strong>{' '}
           {contact.contactInfo.email}
         </p>
         <p className="text-sm text-gray-600">
           <strong className="hidden sm:inline">
             <IconPhone className="w-5 inline" />
-          </strong>{" "}
+          </strong>{' '}
           {contact.contactInfo.countryCode} {contact.contactInfo.phoneNumber}
         </p>
         <div className="px-">

@@ -1,14 +1,17 @@
-import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import TagInput from "../workspace/TagInput";
-import { FileUploadField } from "./FileUploadField";
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 
-type ContactFormValues = {
+import TagInput from '../workspace/TagInput';
+import { FileUploadField } from './FileUploadField';
+
+export type ContactFormValues = {
   name: string;
+  creator?: string;
+  profilePicture?: string;
   contactInfo: {
     countryCode: string;
     email: string;
-    phoneNumber: number | null;
+    phoneNumber: number;
   };
   jobTitle: string;
   company: string;
@@ -49,7 +52,7 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
         </button>
 
         <h2 className="text-2xl font-semibold mb-6">
-          {contact.name.length > 0 ? "Edit Contact" : "Add Contact"}
+          {contact.name.length > 0 ? 'Edit Contact' : 'Add Contact'}
         </h2>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -58,115 +61,93 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
               <FileUploadField
                 name="profilePicture"
                 label="Profile Picture"
-                watch={watch}
-                setValue={setValue}
+                // watch={watch}
+                // setValue={setValue}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
-                {...register("name", { required: "Name is required" })}
+                {...register('name', { required: 'Name is required' })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
+              {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
 
             {/* Country Code */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Country Code
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Country Code</label>
               <input
                 type="text"
-                {...register("contactInfo.countryCode", {
-                  required: "Country code is required",
+                {...register('contactInfo.countryCode', {
+                  required: 'Country code is required',
                 })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
               {errors.contactInfo?.countryCode && (
-                <p className="text-red-500 text-sm">
-                  {errors.contactInfo.countryCode.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.contactInfo.countryCode.message}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
-                {...register("contactInfo.email", {
-                  required: "Email is required",
+                {...register('contactInfo.email', {
+                  required: 'Email is required',
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: "Invalid email format",
+                    message: 'Invalid email format',
                   },
                 })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
               {errors.contactInfo?.email && (
-                <p className="text-red-500 text-sm">
-                  {errors.contactInfo.email.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.contactInfo.email.message}</p>
               )}
             </div>
 
             {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Phone Number</label>
               <input
                 type="number"
-                {...register("contactInfo.phoneNumber", {
-                  required: "Phone number is required",
+                {...register('contactInfo.phoneNumber', {
+                  required: 'Phone number is required',
                 })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
               {errors.contactInfo?.phoneNumber && (
-                <p className="text-red-500 text-sm">
-                  {errors.contactInfo.phoneNumber.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.contactInfo.phoneNumber.message}</p>
               )}
             </div>
 
             {/* Job Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Job Title
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Job Title</label>
               <input
                 type="text"
-                {...register("jobTitle")}
+                {...register('jobTitle')}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
             </div>
 
             {/* Company */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Company
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Company</label>
               <input
                 type="text"
-                {...register("company")}
+                {...register('company')}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
             </div>
 
             {/* Tags */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tags
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
               <TagInput name="tags" watch={watch} setValue={setValue} />
             </div>
 

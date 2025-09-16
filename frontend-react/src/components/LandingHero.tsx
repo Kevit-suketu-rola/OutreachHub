@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default function LandingHero() {
   return (
@@ -8,9 +8,8 @@ export default function LandingHero() {
           Welcome to OutreachHub
         </h1>
         <p className="text-lg md:text-xl text-gray-100 max-w-2xl mb-8">
-          OutreachHub helps you organize contacts, manage campaigns, and send
-          messages seamlessly across your workspaces. Simplify your outreach,
-          save time, and stay connected.
+          OutreachHub helps you organize contacts, manage campaigns, and send messages seamlessly
+          across your workspaces. Simplify your outreach, save time, and stay connected.
         </p>
         <Link
           to="/about"

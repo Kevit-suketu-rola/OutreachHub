@@ -1,16 +1,17 @@
-import { logoutAdmin, logoutUser } from "@/redux/slices/authSlice";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-const LogoutButton: React.FC<{}> = () => {
+import { logoutAdmin, logoutUser } from '@/redux/slices/authSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+const LogoutButton = () => {
   const { isAdmin } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const handleLogout = () => {
     if (isAdmin) dispatch(logoutAdmin());
     else dispatch(logoutUser());
-    navigate("/");
+    navigate('/');
   };
   return (
     <button

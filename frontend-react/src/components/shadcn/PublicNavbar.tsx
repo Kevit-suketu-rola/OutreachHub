@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+
+import { Menu, X } from 'lucide-react';
 
 export default function PublicNavbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,10 +32,7 @@ export default function PublicNavbar() {
           </NavLink>
         </div>
 
-        <button
-          className="md:hidden text-gray-700"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+        <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>

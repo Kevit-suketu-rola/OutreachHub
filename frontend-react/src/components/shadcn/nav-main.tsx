@@ -1,4 +1,8 @@
-import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react";
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { type Icon, IconCirclePlusFilled } from '@tabler/icons-react';
 
 import {
   SidebarGroup,
@@ -6,13 +10,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useLocation, useNavigate } from "react-router-dom";
-import { createWorkspace } from "@/redux/slices/workspaceSlice";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import WorkspaceManageModal from "../workspace/WorkspaceManageModal";
-import { useState } from "react";
+} from '@/components/ui/sidebar';
+import { Workspace, createWorkspace } from '@/redux/slices/workspaceSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+import WorkspaceManageModal from '../workspace/WorkspaceManageModal';
 
 export function NavMain({
   items,
@@ -29,7 +31,7 @@ export function NavMain({
   const { isAdmin } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-  const handleCreateWorkspace = (workspace: any) => {
+  const handleCreateWorkspace = (workspace: Workspace) => {
     dispatch(createWorkspace(workspace));
     setOpen(false);
   };
@@ -44,7 +46,7 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip="Create Workspace"
                   className=" text-blue-600 bg-white font-bold border border-blue-600 hover:text-white hover:bg-blue-600 transition active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-                  onClick={() => setOpen(true)}
+                  onClick={() => setOpen(false)}
                 >
                   <IconCirclePlusFilled />
                   <span>Create Workspace</span>
@@ -55,19 +57,12 @@ export function NavMain({
           <SidebarMenu>
             {items.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton
-                  tooltip={item.title}
-                  onClick={() => navigate(item.url)}
-                >
+                <SidebarMenuButton tooltip={item.title} onClick={() => navigate(item.url)}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                  {!isAdmin &&
-                    location.pathname !== "/user" &&
-                    item.title === "Home" && (
-                      <span className="ml-auto text-blue-500 font-bold">
-                        Switch Workspace
-                      </span>
-                    )}
+                  {!isAdmin && location.pathname !== '/user' && item.title === 'Home' && (
+                    <span className="ml-auto text-blue-500 font-bold">Switch Workspace</span>
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -83,12 +78,12 @@ export function NavMain({
           onSubmit={handleCreateWorkspace}
           open={open}
           workspace={{
-            _id: "",
-            name: "",
-            description: "",
+            _id: '',
+            name: '',
+            description: '',
             tags: [],
-            createdAt: "",
-            creator: "",
+            createdAt: '',
+            creator: '',
           }}
         />
       )}

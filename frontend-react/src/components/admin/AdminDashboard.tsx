@@ -1,12 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { UserBarChart } from "../shadcn/BarChart";
-import { useEffect } from "react";
-import { fetchAllCampaigns } from "@/redux/slices/campaignSlice";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { CampaignsTable } from "../campaign/CampaignsTable";
-import { AdminSectionCards } from "./AdminSectionCards";
-import { AdminCampaignsChart } from "./AdminCampaignsChart";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { fetchAllCampaigns } from '@/redux/slices/campaignSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+import { CampaignsTable } from '../campaign/CampaignsTable';
+import { UserBarChart } from '../shadcn/BarChart';
+import { AdminCampaignsChart } from './AdminCampaignsChart';
+import { AdminSectionCards } from './AdminSectionCards';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ export const AdminDashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) navigate("/");
+    if (!localStorage.getItem('token')) navigate('/');
   });
   return (
     <div className="flex flex-1 flex-col">

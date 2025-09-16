@@ -1,25 +1,23 @@
-import { createUser } from "@/redux/slices/userSlice";
-import type { AppDispatch } from "@/redux/store";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { createUser } from '@/redux/slices/userSlice';
+import { Workspace } from '@/redux/slices/workspaceSlice';
+import type { AppDispatch } from '@/redux/store';
 
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  workspace: any;
+  workspace: Workspace;
 }
 
-export const CreateUserModal: React.FC<CreateUserModalProps> = ({
-  isOpen,
-  onClose,
-  workspace,
-}) => {
+export const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, workspace }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    countryCode: "",
-    phoneNumber: "",
+    name: '',
+    email: '',
+    password: '',
+    countryCode: '',
+    phoneNumber: '',
     write: false,
     allowAdd: false,
   });

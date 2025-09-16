@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Workspace } from '@/redux/slices/workspaceSlice';
 
 interface MenuOption {
   label: string;
@@ -7,8 +9,8 @@ interface MenuOption {
 }
 
 interface WorkspaceOptionsProps {
-  workspace: any;
-  onEdit: (workspace: any) => void;
+  workspace: Workspace;
+  onEdit: (workspace: Workspace) => void;
   onDelete: (id: string) => void;
   setOpenExisting: (value: boolean) => void;
   setOpenCreate: (value: boolean) => void;
@@ -24,24 +26,24 @@ export const WorkspaceOptions: React.FC<WorkspaceOptionsProps> = ({
   setOpenUsers,
 }) => {
   const menuOptions: MenuOption[] = [
-    { label: "Edit", onClick: () => onEdit(workspace) },
-    { label: "Delete", onClick: () => onDelete(workspace._id) },
+    { label: 'Edit', onClick: () => onEdit(workspace) },
+    { label: 'Delete', onClick: () => onDelete(workspace._id) },
     {
-      label: "Add User",
+      label: 'Add User',
       submenu: [
         {
-          label: "Add Existing",
+          label: 'Add Existing',
           onClick: () => {
             setOpenExisting(true);
           },
         },
         {
-          label: "Create New",
+          label: 'Create New',
           onClick: () => setOpenCreate(true),
         },
       ],
     },
-    { label: "Users", onClick: () => setOpenUsers(true) },
+    { label: 'Users', onClick: () => setOpenUsers(true) },
   ];
 
   const [open, setOpen] = useState(false);
@@ -59,13 +61,13 @@ export const WorkspaceOptions: React.FC<WorkspaceOptionsProps> = ({
 
   useEffect(() => {
     if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [open]);
 

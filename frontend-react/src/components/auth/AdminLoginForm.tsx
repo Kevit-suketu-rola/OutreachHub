@@ -1,9 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import type { RootState, AppDispatch } from "../../redux/store";
-import { loginAdmin } from "../../redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { loginAdmin } from '../../redux/slices/authSlice';
+import type { AppDispatch, RootState } from '../../redux/store';
 
 type FormData = {
   email: string;
@@ -16,7 +17,7 @@ export default function AdminLoginForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/admin");
+    if (localStorage.getItem('token')) navigate('/admin');
   });
 
   const {
@@ -29,9 +30,9 @@ export default function AdminLoginForm() {
     const resultAction = await dispatch(loginAdmin(data));
 
     if (loginAdmin.fulfilled.match(resultAction)) {
-      navigate("/admin");
+      navigate('/admin');
     } else {
-      alert("Error logging in: " + resultAction.payload);
+      alert('Error logging in: ' + resultAction.payload);
     }
   };
 
@@ -46,22 +47,18 @@ export default function AdminLoginForm() {
           <input
             id="email"
             type="email"
-            {...register("email", {
-              required: "Email is required",
+            {...register('email', {
+              required: 'Email is required',
               pattern: {
                 value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                message: "Invalid email address",
+                message: 'Invalid email address',
               },
             })}
             className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.email
-                ? "focus:ring-red-500 border-red-500"
-                : "focus:ring-blue-500"
+              errors.email ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
             }`}
           />
-          {errors.email && (
-            <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
         <div>
@@ -71,19 +68,15 @@ export default function AdminLoginForm() {
           <input
             id="password"
             type="password"
-            {...register("password", {
-              required: "Password is required",
+            {...register('password', {
+              required: 'Password is required',
             })}
             className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.password
-                ? "focus:ring-red-500 border-red-500"
-                : "focus:ring-blue-500"
+              errors.password ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
             }`}
           />
           {errors.password && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors.password.message}
-            </p>
+            <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
           )}
         </div>
 
@@ -94,7 +87,7 @@ export default function AdminLoginForm() {
           disabled={loading}
           className="w-full bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-500 transition"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </>

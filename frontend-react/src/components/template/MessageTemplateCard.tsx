@@ -1,14 +1,17 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/redux/store";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import {
+  MessageTemplate,
   deleteMessageTemplate,
   editMessageTemplate,
-} from "@/redux/slices/messageTemplateSlice";
-import { MessageTemplateOptions } from "./MessageTemplateOptions";
-import { UpdateMessageTemplateModal } from "./UpdateMessageTemplateModal";
+} from '@/redux/slices/messageTemplateSlice';
+import type { AppDispatch } from '@/redux/store';
 
-export const MessageTemplateCard = ({ template }: { template: any }) => {
+import { MessageTemplateOptions } from './MessageTemplateOptions';
+import { UpdateMessageTemplateModal } from './UpdateMessageTemplateModal';
+
+export const MessageTemplateCard = ({ template }: { template: MessageTemplate }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -18,12 +21,12 @@ export const MessageTemplateCard = ({ template }: { template: any }) => {
     dispatch(deleteMessageTemplate(id));
   };
 
-  const handleUpdate = (data: any) => {
-    if (template.templateImage === "" || data.type === "text") {
-      data.type = "text";
+  const handleUpdate = (data: MessageTemplate) => {
+    if (template.templateImage === '' || data.type === 'text') {
+      data.type = 'text';
       delete data.templateImage;
     }
-    dispatch(editMessageTemplate({ id: template._id, update: data }));
+    dispatch(editMessageTemplate({ id: template._id || '', update: data }));
     setOpenUpdate(false);
   };
 
@@ -37,14 +40,8 @@ export const MessageTemplateCard = ({ template }: { template: any }) => {
           className="w-full h-auto rounded-md mt-2"
         />
       )}
-      <p className="text-sm text-gray-600 whitespace-pre-wrap mt-2">
-        {template.template}
-      </p>
-      <MessageTemplateOptions
-        template={template}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
+      <p className="text-sm text-gray-600 whitespace-pre-wrap mt-2">{template.template}</p>
+      <MessageTemplateOptions template={template} onEdit={onEdit} onDelete={onDelete} />
       {openUpdate && (
         <UpdateMessageTemplateModal
           template={template}

@@ -1,16 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { NavMain } from "@/components/shadcn/nav-main";
-import { NavSecondary } from "@/components/shadcn/nav-secondary";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
 import {
   IconAnalyze,
   IconBrandCampaignmonitor,
@@ -18,9 +9,19 @@ import {
   IconHttpConnect,
   IconNetwork,
   IconTemplate,
-} from "@tabler/icons-react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
+} from '@tabler/icons-react';
+
+import { NavMain } from '@/components/shadcn/nav-main';
+import { NavSecondary } from '@/components/shadcn/nav-secondary';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar';
+import type { RootState } from '@/redux/store';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isAdmin } = useSelector((state: RootState) => state.auth);
@@ -28,23 +29,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = {
     navMain: isAdmin
       ? [
-          { title: "Dashboard", url: "", icon: IconAnalyze },
-          { title: "Workspaces", url: "workspaces", icon: IconNetwork },
+          { title: 'Dashboard', url: '', icon: IconAnalyze },
+          { title: 'Workspaces', url: 'workspaces', icon: IconNetwork },
         ]
       : [
-          { title: "Home", url: "", icon: IconNetwork },
+          { title: 'Home', url: '', icon: IconNetwork },
           {
-            title: "Campaigns",
-            url: "campaigns",
+            title: 'Campaigns',
+            url: 'campaigns',
             icon: IconBrandCampaignmonitor,
           },
-          { title: "Contacts", url: "contacts", icon: IconHttpConnect },
-          { title: "Templates", url: "templates", icon: IconTemplate },
+          { title: 'Contacts', url: 'contacts', icon: IconHttpConnect },
+          { title: 'Templates', url: 'templates', icon: IconTemplate },
         ],
     navSecondary: [
       {
-        title: "About",
-        url: "#",
+        title: 'About',
+        url: '#',
         icon: IconHelp,
       },
     ],
@@ -54,10 +55,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link to="/">
                 <div className="inline w-8 h-14 rounded-full bg-gradient-to-b from-blue-400 to-purple-600"></div>
                 <span className="text-base font-semibold">OutreachHub</span>

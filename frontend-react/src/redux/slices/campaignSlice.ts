@@ -1,106 +1,117 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL } from "./authSlice";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/campaign`,
-  timeout: 2000,
-  headers: { "Content-Type": "application/json" },
-});
+import { createAxiosInstance } from './authSlice';
+import { MessageTemplate } from './messageTemplateSlice';
+import { User } from './userSlice';
+import { Workspace } from './workspaceSlice';
+
+export const axiosInstance = createAxiosInstance('campaign');
 
 export const fetchAllCampaigns = createAsyncThunk(
-  "admin/fetchAllCampaigns",
+  'admin/fetchAllCampaigns',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/all", {
+      const response = await axiosInstance.get('/all', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
       return { campaigns: response.data.campaigns };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const fetchACampaign = createAsyncThunk(
-  "common/fetchACampaign",
+  'common/fetchACampaign',
   async (id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/by-id/${id}`, {
         headers: {
           Authorization: `Bearer ${
-            localStorage.getItem("token") || localStorage.getItem("user-token")
+            localStorage.getItem('token') || localStorage.getItem('user-token')
           }`,
         },
       });
 
       return { campaign: response.data.campaign };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const getAllCampaignsForUser = createAsyncThunk(
-  "user/getAllCampaigns",
+  'user/getAllCampaigns',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/all-of-user", {
+      const response = await axiosInstance.get('/all-of-user', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
 
       return { campaigns: response.data.campaigns };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const getAllCampaignsOfWorkspace = createAsyncThunk(
-  "user/getAllCampaignsOfWorkspace",
+  'user/getAllCampaignsOfWorkspace',
   async (id: string | undefined, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/all-of-workspace/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
 
       return { campaigns: response.data.campaigns };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
+export type UpdateCampaign = {
+  workspaceId?: string;
+  details: {
+    templateId?: string;
+    name?: string;
+    status?: 'Draft' | 'Running' | 'Completed';
+    startDate?: Date;
+    endDate?: Date;
+  };
+  tags?: string[];
+};
+
 export const editCampaign = createAsyncThunk(
-  "user/editCampaign",
-  async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+  'user/editCampaign',
+  async ({ id, data }: { id: string; data: UpdateCampaign }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
         `/update/${id}`,
         { ...data },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
 
       return { campaign: response.data.campaign };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const launchCampaign = createAsyncThunk(
-  "user/launchCampaign",
+  'user/launchCampaign',
   async (id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
@@ -108,74 +119,80 @@ export const launchCampaign = createAsyncThunk(
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
 
       return { campaign: response.data.campaign };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const createCampaign = createAsyncThunk(
-  "user/createCampaign",
-  async (
-    campaign: {
-      name: string;
-      description: string;
-      tags: string[];
-    },
-    { rejectWithValue }
-  ) => {
+  'user/createCampaign',
+  async (campaign: Campaign, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
         `/create`,
         { ...campaign },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            Authorization: `Bearer ${localStorage.getItem('user-token')}`,
           },
-        }
+        },
       );
 
       return { campaign: response.data.campaign };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
 export const deleteCampaign = createAsyncThunk(
-  "user/deleteCampaign",
+  'user/deleteCampaign',
   async (id: string, { rejectWithValue }) => {
     try {
       await axiosInstance.delete(`/delete/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
 
       return { id };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
+export type Campaign = {
+  _id?: string;
+  creator?: string | User;
+  name: string;
+  tags: string[];
+  workspaceId?: string | Workspace;
+  templateId?: string | MessageTemplate;
+  status?: 'Draft' | 'Running' | 'Completed';
+  startDate: Date | string;
+  endDate: Date | string;
+  creationDate?: Date | string;
+};
+
 interface CampaignState {
-  campaigns: any[];
-  campaign: any;
-  userCampaigns: any[];
-  workspaceCampaigns: any[];
+  campaigns: Campaign[];
+  campaign: Campaign;
+  userCampaigns: Campaign[];
+  workspaceCampaigns: Campaign[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: CampaignState = {
-  campaign: {},
+  campaign: {} as Campaign,
   campaigns: [],
   userCampaigns: [],
   workspaceCampaigns: [],
@@ -184,7 +201,7 @@ const initialState: CampaignState = {
 };
 
 const CampaignSlice = createSlice({
-  name: "campaign",
+  name: 'campaign',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -228,18 +245,14 @@ const CampaignSlice = createSlice({
       .addCase(editCampaign.fulfilled, (state, action) => {
         state.loading = false;
         state.workspaceCampaigns = [
-          ...state.workspaceCampaigns.filter(
-            (u) => u._id !== action.payload.campaign._id
-          ),
+          ...state.workspaceCampaigns.filter((u) => u._id !== action.payload.campaign._id),
           action.payload.campaign,
         ];
       })
       .addCase(launchCampaign.fulfilled, (state, action) => {
         state.loading = false;
         state.workspaceCampaigns = [
-          ...state.workspaceCampaigns.filter(
-            (u) => u._id !== action.payload.campaign._id
-          ),
+          ...state.workspaceCampaigns.filter((u) => u._id !== action.payload.campaign._id),
           action.payload.campaign,
         ];
       })
@@ -249,14 +262,7 @@ const CampaignSlice = createSlice({
       })
       .addCase(createCampaign.fulfilled, (state, action) => {
         state.loading = false;
-        state.workspaceCampaigns = [
-          ...state.workspaceCampaigns,
-          action.payload.campaign,
-        ];
-      })
-      .addCase(createCampaign.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.workspaceCampaigns = [...state.workspaceCampaigns, action.payload.campaign];
       })
       .addCase(deleteCampaign.pending, (state) => {
         state.loading = true;
@@ -265,12 +271,8 @@ const CampaignSlice = createSlice({
       .addCase(deleteCampaign.fulfilled, (state, action) => {
         state.loading = false;
         state.workspaceCampaigns = state.workspaceCampaigns.filter(
-          (u) => u._id !== action.payload.id
+          (u) => u._id !== action.payload.id,
         );
-      })
-      .addCase(deleteCampaign.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
       });
   },
 });

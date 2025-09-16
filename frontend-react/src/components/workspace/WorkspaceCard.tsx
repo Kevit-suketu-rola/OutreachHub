@@ -1,20 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { WorkspaceOptions } from "./WorkspaceOptions";
-import { ExistingUsers } from "./ExistingUsers";
-import { CreateUserModal } from "./CreateUserModal";
-import WorkspaceUsersModal from "./WorkspaceUsersModal";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
-import { BASE_URL } from "@/redux/slices/authSlice";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import axios from 'axios';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BASE_URL } from '@/redux/slices/authSlice';
+import { User } from '@/redux/slices/userSlice';
+import { Workspace } from '@/redux/slices/workspaceSlice';
+import { WorkspaceUser } from '@/redux/slices/workspaceUserSlice';
+import type { RootState } from '@/redux/store';
+
+import { CreateUserModal } from './CreateUserModal';
+import { ExistingUsers } from './ExistingUsers';
+import { WorkspaceOptions } from './WorkspaceOptions';
+import WorkspaceUsersModal from './WorkspaceUsersModal';
 
 const WorkspaceCard: React.FC<{
-  workspace: any;
-  onEdit: (_: any) => void;
-  onDelete: (_: any) => void;
+  workspace: Workspace;
+  onEdit: (_: Workspace) => void;
+  onDelete: (_: string) => void;
 }> = ({ workspace, onEdit, onDelete }) => {
-  const [workspaceUsers, setWorkspaceUsers] = useState<any>([]);
+  const [workspaceUsers, setWorkspaceUsers] = useState<WorkspaceUser[]>([]);
   const [campaigns, setCampaigns] = useState([]);
   const [openExisting, setOpenExisting] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
@@ -28,29 +34,23 @@ const WorkspaceCard: React.FC<{
       try {
         setIsLoading(true);
 
-        const res1 = await axios(
-          `${BASE_URL}/workspace-user/all-users/${workspace._id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res1 = await axios(`${BASE_URL}/workspace-user/all-users/${workspace._id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         setWorkspaceUsers(res1.data.workspaceUsers);
 
-        const res2 = await axios(
-          `${BASE_URL}/campaign/all-of-workspace/${workspace._id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res2 = await axios(`${BASE_URL}/campaign/all-of-workspace/${workspace._id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         setCampaigns(res2.data.campaigns);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -62,17 +62,19 @@ const WorkspaceCard: React.FC<{
     setUserCount(workspaceUsers.length);
   }, [workspaceUsers]);
 
-  const filterUsers = (wu: any[], users: any[], flip: boolean): any[] => {
-    const workspaceUserIds = wu.map((wu: any) => wu.userId._id);
+  const filterUsers = (wu: WorkspaceUser[], users: User[], flip: boolean): User[] => {
+    const workspaceUserIds = wu.map((wu: WorkspaceUser) => {
+      if (typeof wu.userId === 'string') {
+        return wu.userId;
+      } else {
+        return wu.userId._id;
+      }
+    });
     let filtered = [];
     if (flip) {
-      filtered = users.filter(
-        (user: any) => !workspaceUserIds.includes(user._id)
-      );
+      filtered = users.filter((user: User) => !workspaceUserIds.includes(user._id));
     } else {
-      filtered = users.filter((user: any) =>
-        workspaceUserIds.includes(user._id)
-      );
+      filtered = users.filter((user: User) => workspaceUserIds.includes(user._id));
     }
     return filtered;
   };
@@ -97,15 +99,24 @@ const WorkspaceCard: React.FC<{
               setOpenUsers={setOpenUsers}
             />
           </div>
-          <p className="text-sm text-muted-foreground">
-            {workspace.description}
-          </p>
+          <p className="text-sm text-muted-foreground">{workspace.description}</p>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-1">
-            <p>
-              <strong>Tags:</strong> {workspace.tags.join(", ")}
-            </p>
+            <div className="px-">
+              {workspace.tags && workspace.tags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {workspace.tags.map((tag: string, index: number) => (
+                    <span
+                      key={index}
+                      className="bg-blue-200 text-blue-800 text-xs font-medium px-2 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
             <p>
               <strong>Users:</strong> {userCount}
             </p>
@@ -113,8 +124,8 @@ const WorkspaceCard: React.FC<{
               <strong>Campaigns:</strong> {campaigns.length}
             </p>
             <p>
-              <strong>Created:</strong>{" "}
-              {new Date(workspace.createdAt).toLocaleDateString()}
+              <strong>Created:</strong>{' '}
+              {new Date(workspace.createdAt as string).toLocaleDateString()}
             </p>
           </div>
         </CardContent>

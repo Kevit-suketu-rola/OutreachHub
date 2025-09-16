@@ -1,32 +1,30 @@
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { CampaignDetailsModal } from "./CampaignDetailsModal";
-import {
-  fetchACampaign,
-  fetchAllCampaigns,
-} from "@/redux/slices/campaignSlice";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Campaign, fetchACampaign, fetchAllCampaigns } from '@/redux/slices/campaignSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+import { CampaignDetailsModal } from './CampaignDetailsModal';
 
 export const CampaignsTable = () => {
   const { workspaceCampaigns, campaign, loading, campaigns } = useSelector(
-    (state: RootState) => state.campaign
+    (state: RootState) => state.campaign,
   );
   const { isAdmin } = useSelector((state: RootState) => state.auth);
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(
-    null
-  );
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (isAdmin) dispatch(fetchAllCampaigns());
-  }, [dispatch]);
+    if (isAdmin) {
+      dispatch(fetchAllCampaigns());
+    }
+  }, [isAdmin, dispatch]);
 
-  const runningCampaigns = (isAdmin ? campaigns : workspaceCampaigns).filter(
-    (c) => c.status === "Running"
-  );
+  const allCampaigns = isAdmin ? campaigns : workspaceCampaigns;
+  const runningCampaigns = allCampaigns.filter((c: Campaign) => c.status === 'Running');
 
-  const handleNameClick = (id: any) => {
+  const handleNameClick = (id: string) => {
     setSelectedCampaignId(id);
     setShowModal(true);
     dispatch(fetchACampaign(id));
@@ -34,9 +32,7 @@ export const CampaignsTable = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-100">
-        Recent Running Campaigns
-      </h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-100">Recent Running Campaigns</h2>
 
       {runningCampaigns.length === 0 ? (
         <p className="text-gray-600">No running campaigns found.</p>
@@ -53,35 +49,29 @@ export const CampaignsTable = () => {
             </thead>
             <tbody className="text-sm text-gray-800 bg-white">
               {runningCampaigns
-                .sort(
-                  (a, b) =>
-                    new Date(b.startDate).getTime() -
-                    new Date(a.startDate).getTime()
-                )
+                .sort((a, b) => {
+                  const dateA = new Date(a.startDate || '').getTime();
+                  const dateB = new Date(b.startDate || '').getTime();
+                  return dateB - dateA;
+                })
                 .slice(0, 5)
-                .map((campaign, index) => (
-                  <tr
-                    key={index}
-                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                  >
+                .map((campaign: Campaign, i: number) => (
+                  <tr key={i} className="even:bg-gray-50">
                     <td className="px-4 py-3 border-b">
                       <span
                         className="hover:underline text-blue-600 hover:cursor-pointer"
-                        onClick={() => handleNameClick(campaign._id)}
+                        onClick={() => handleNameClick(campaign._id || '')}
                       >
                         {campaign.name}
                       </span>
                     </td>
-
                     <td className="px-4 py-3 border-b">
-                      {formatDate(campaign.startDate)}
+                      {formatDate(campaign.startDate.toString())}
                     </td>
                     <td className="px-4 py-3 border-b">
-                      {formatDate(campaign.endDate)}
+                      {formatDate(campaign.endDate.toString())}
                     </td>
-                    <td className="px-4 py-3 border-b">
-                      {campaign.tags?.join(", ")}
-                    </td>
+                    <td className="px-4 py-3 border-b">{campaign.tags?.join(', ') || '-'}</td>
                   </tr>
                 ))}
             </tbody>
@@ -99,7 +89,12 @@ export const CampaignsTable = () => {
   );
 };
 
-const formatDate = (dateObj: { $date: string } | null | undefined): string => {
-  if (!dateObj) return "-";
-  return dateObj.toString().split("T")[0];
+const formatDate = (dateObj: string | null): string => {
+  if (!dateObj) return '-';
+  const date = new Date(dateObj);
+  // Check if the date is valid before formatting
+  if (isNaN(date.getTime())) {
+    return '-';
+  }
+  return date.toISOString().split('T')[0] as string;
 };

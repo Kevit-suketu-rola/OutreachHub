@@ -1,19 +1,14 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
-import { fetchAllWorkspaces } from "@/redux/slices/workspaceSlice";
-import { fetchAllUsers } from "@/redux/slices/userSlice";
-import { fetchAllContacts } from "@/redux/slices/contactSlice";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-export const AdminSectionCards: React.FC<{ campaigns: any[] }> = ({
-  campaigns,
-}) => {
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Campaign } from '@/redux/slices/campaignSlice';
+import { fetchAllContacts } from '@/redux/slices/contactSlice';
+import { fetchAllUsers } from '@/redux/slices/userSlice';
+import { fetchAllWorkspaces } from '@/redux/slices/workspaceSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+export const AdminSectionCards: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
   const { users, userLoading } = useSelector((state: RootState) => state.user);
   const { workspaces } = useSelector((state: RootState) => state.workspace);
   const { contacts } = useSelector((state: RootState) => state.contact);
@@ -34,18 +29,16 @@ export const AdminSectionCards: React.FC<{ campaigns: any[] }> = ({
           </CardDescription>
         </CardHeader>
         <CardTitle className="text-6xl text-center font-bold">
-          {userLoading ? "-" : workspaces.length}
+          {userLoading ? '-' : workspaces.length}
         </CardTitle>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription className="text-center font-semibold text-2xl">
-            Users
-          </CardDescription>
+          <CardDescription className="text-center font-semibold text-2xl">Users</CardDescription>
         </CardHeader>
         <CardTitle className="text-6xl text-center font-bold">
-          {userLoading ? "-" : users.length}
+          {userLoading ? '-' : users.length}
         </CardTitle>
       </Card>
 
@@ -55,23 +48,17 @@ export const AdminSectionCards: React.FC<{ campaigns: any[] }> = ({
             Campaigns
           </CardDescription>
         </CardHeader>
-        <CardTitle className="text-6xl text-center font-bold">
-          {campaigns.length}
-        </CardTitle>
+        <CardTitle className="text-6xl text-center font-bold">{campaigns.length}</CardTitle>
         <div className="m-auto bg-blue-500 rounded px-4 py-2 text-white">
-          Running: {campaigns.filter((c: any) => c.status === "Running").length}
+          Running: {campaigns.filter((c: Campaign) => c.status === 'Running').length}
         </div>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription className="text-center font-semibold text-2xl">
-            Contacts
-          </CardDescription>
+          <CardDescription className="text-center font-semibold text-2xl">Contacts</CardDescription>
         </CardHeader>
-        <CardTitle className="text-6xl text-center font-bold">
-          {contacts.length}
-        </CardTitle>
+        <CardTitle className="text-6xl text-center font-bold">{contacts.length}</CardTitle>
       </Card>
     </div>
   );

@@ -1,37 +1,41 @@
-import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { FileUploadField } from "../contacts/FileUploadField";
+import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 
-type TemplateFormValues = {
+import { MessageTemplate } from '@/redux/slices/messageTemplateSlice';
+
+import { FileUploadField } from '../contacts/FileUploadField';
+
+export type TemplateFormValues = {
   _id?: string;
   title: string;
   template: string;
-  type: "text" | "text-image";
+  type: 'text' | 'text-image';
   templateImage?: string;
 };
 
 type Props = {
-  template: TemplateFormValues;
+  template: MessageTemplate;
   onClose: () => void;
   onSubmit: (data: TemplateFormValues) => void;
 };
 
-export const UpdateMessageTemplateModal: React.FC<Props> = ({
-  template,
-  onClose,
-  onSubmit,
-}) => {
+export const UpdateMessageTemplateModal: React.FC<Props> = ({ template, onClose, onSubmit }) => {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors },
-  } = useForm<TemplateFormValues>({ defaultValues: template });
+  } = useForm<TemplateFormValues>({
+    defaultValues: {
+      ...template,
+      type: template.type === 'text-image' ? 'text-image' : 'text',
+    },
+  });
 
-  const [typeImg, setTypeImg] = useState(template.type || "text");
-  const typeValue = watch("type"); // read from form
-  const [isChecked, setIsChecked] = useState(typeValue === "text-image");
+  const [typeImg, setTypeImg] = useState(template.type || 'text');
+  const typeValue = watch('type'); // read from form
+  const [isChecked, setIsChecked] = useState(typeValue === 'text-image');
   const methods = useForm();
 
   return (
@@ -45,15 +49,12 @@ export const UpdateMessageTemplateModal: React.FC<Props> = ({
         </button>
 
         <h2 className="text-2xl font-semibold mb-6">
-          {template._id ? "Edit" : "Create"} Message Template
+          {template._id ? 'Edit' : 'Create'} Message Template
         </h2>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label
-                htmlFor="type"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="type" className="block text-sm font-medium text-gray-700">
                 Image
               </label>
               <input
@@ -61,51 +62,36 @@ export const UpdateMessageTemplateModal: React.FC<Props> = ({
                 id="type"
                 checked={isChecked}
                 onChange={(e) => {
-                  const newValue = e.target.checked ? "text-image" : "text";
-                  if (newValue === "text") setValue("type", newValue);
+                  const newValue = e.target.checked ? 'text-image' : 'text';
+                  if (newValue === 'text') setValue('type', newValue);
                   setTypeImg(newValue);
                   setIsChecked(e.target.checked);
                 }}
               />
             </div>
-            {typeImg === "text-image" && (
+            {typeImg === 'text-image' && (
               <div>
-                <FileUploadField
-                  name="templateImage"
-                  label="Template Image"
-                  watch={watch}
-                  setValue={setValue}
-                />
+                <FileUploadField name="templateImage" label="Template Image" />
               </div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Title
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Title</label>
               <input
                 type="text"
-                {...register("title", { required: "Title is required" })}
+                {...register('title', { required: 'Title is required' })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               />
-              {errors.title && (
-                <p className="text-red-500 text-sm">{errors.title.message}</p>
-              )}
+              {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Template
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Template</label>
               <textarea
-                {...register("template", { required: "Template is required" })}
+                {...register('template', { required: 'Template is required' })}
                 rows={6}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               ></textarea>
-              {errors.template && (
-                <p className="text-red-500 text-sm">
-                  {errors.template.message}
-                </p>
-              )}
+              {errors.template && <p className="text-red-500 text-sm">{errors.template.message}</p>}
             </div>
 
             <div className="pt-4">

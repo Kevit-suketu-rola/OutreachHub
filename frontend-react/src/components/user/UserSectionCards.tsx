@@ -1,20 +1,14 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
-import { getAllCampaignsOfWorkspace } from "@/redux/slices/campaignSlice";
-import { fetchContactsOfWorkspace } from "@/redux/slices/contactSlice";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-export const UserSectionCards: React.FC<{}> = ({}) => {
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getAllCampaignsOfWorkspace } from '@/redux/slices/campaignSlice';
+import { fetchContactsOfWorkspace } from '@/redux/slices/contactSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
+
+export const UserSectionCards = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { workspaceCampaigns } = useSelector(
-    (state: RootState) => state.campaign
-  );
+  const { workspaceCampaigns } = useSelector((state: RootState) => state.campaign);
   const { contacts } = useSelector((state: RootState) => state.contact);
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
 
@@ -57,20 +51,15 @@ export const UserSectionCards: React.FC<{}> = ({}) => {
           {workspaceCampaigns.length}
         </CardTitle>
         <div className="m-auto bg-blue-500 rounded px-4 py-2 text-white">
-          Running:{" "}
-          {workspaceCampaigns.filter((c) => c.status === "Running").length}
+          Running: {workspaceCampaigns.filter((c) => c.status === 'Running').length}
         </div>
       </Card>
 
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription className="text-center font-semibold text-2xl">
-            Contacts
-          </CardDescription>
+          <CardDescription className="text-center font-semibold text-2xl">Contacts</CardDescription>
         </CardHeader>
-        <CardTitle className="text-6xl text-center font-bold">
-          {contacts.length}
-        </CardTitle>
+        <CardTitle className="text-6xl text-center font-bold">{contacts.length}</CardTitle>
       </Card>
     </div>
   );

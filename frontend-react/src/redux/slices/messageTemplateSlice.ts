@@ -1,80 +1,101 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { BASE_URL, navigateLogin } from "./authSlice";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/message-template`,
-  timeout: 2000,
-  headers: { "Content-Type": "application/json" },
-});
+import { createAxiosInstance, navigateLogin } from './authSlice';
+
+export const axiosInstance = createAxiosInstance('message-template');
 
 export const fetchMessageTemplates = createAsyncThunk(
-  "template/fetchAll",
+  'template/fetchAll',
   async (workspaceId: string | undefined, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(`/all/${workspaceId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
       return { templates: res.data.templates };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Fetch failed");
+    } catch {
+      return rejectWithValue('Fetch failed');
     }
-  }
+  },
 );
 
+type CreateTemplate = {
+  title: string;
+  template: string;
+  type: string;
+  templateImage?: string;
+  workspaceId: string;
+};
+
 export const createMessageTemplate = createAsyncThunk(
-  "user/createTemplate",
-  async (data: any, { rejectWithValue }) => {
+  'user/createTemplate',
+  async (data: CreateTemplate, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post(`/create`, data, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
       return { template: res.data.template };
-    } catch (error: any) {
+    } catch {
       navigateLogin();
-      return rejectWithValue(error.response?.data?.message || "Create failed");
+      return rejectWithValue('Create failed');
     }
-  }
+  },
 );
 
+type UpdateTemplate = { title: string; template: string; type: string; templateImage?: string };
+
 export const editMessageTemplate = createAsyncThunk(
-  "user/editTemplate",
-  async (data: { id: string; update: any }, { rejectWithValue }) => {
+  'user/editTemplate',
+  async (
+    data: {
+      id: string;
+      update: UpdateTemplate;
+    },
+    { rejectWithValue },
+  ) => {
     try {
       const res = await axiosInstance.put(`/update/${data.id}`, data.update, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
       return { template: res.data.template };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Edit failed");
+    } catch {
+      return rejectWithValue('Edit failed');
     }
-  }
+  },
 );
 
 export const deleteMessageTemplate = createAsyncThunk(
-  "user/deleteTemplate",
+  'user/deleteTemplate',
   async (id: string, { rejectWithValue }) => {
     try {
       await axiosInstance.delete(`/delete/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
       });
       return { id };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Delete failed");
+    } catch {
+      return rejectWithValue('Delete failed');
     }
-  }
+  },
 );
 
+export type MessageTemplate = {
+  _id?: string;
+  title: string;
+  template: string;
+  workspaceId?: string;
+  templateImage?: string;
+  type: string;
+};
+
 interface messageTemplateState {
-  templates: any[];
+  templates: MessageTemplate[];
   loading: boolean;
   error: string | null;
 }
@@ -85,7 +106,7 @@ const initialState: messageTemplateState = {
 };
 
 const messageTemplateSlice = createSlice({
-  name: "messageTemplate",
+  name: 'messageTemplate',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -101,13 +122,13 @@ const messageTemplateSlice = createSlice({
         state.templates = [...state.templates, action.payload.template];
       })
       .addCase(editMessageTemplate.fulfilled, (state, action) => {
-        state.templates = state.templates.map((t: any) =>
-          t._id === action.payload.template._id ? action.payload.template : t
+        state.templates = state.templates.map((t: MessageTemplate) =>
+          t._id === action.payload.template._id ? action.payload.template : t,
         );
       })
       .addCase(deleteMessageTemplate.fulfilled, (state, action) => {
         state.templates = state.templates.filter(
-          (t: any) => t._id !== action.payload.id
+          (t: MessageTemplate) => t._id !== action.payload.id,
         );
       });
   },

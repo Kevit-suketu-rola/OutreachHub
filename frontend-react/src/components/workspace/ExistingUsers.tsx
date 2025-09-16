@@ -1,32 +1,35 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { UserItem } from "../admin/UserItem";
-import type { RootState } from "@/redux/store";
-import { BASE_URL } from "@/redux/slices/authSlice";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import axios from 'axios';
+
+import { BASE_URL } from '@/redux/slices/authSlice';
+import { User } from '@/redux/slices/userSlice';
+import { Workspace } from '@/redux/slices/workspaceSlice';
+import { WorkspaceUser } from '@/redux/slices/workspaceUserSlice';
+import type { RootState } from '@/redux/store';
+
+import { UserItem } from '../admin/UserItem';
 
 export const ExistingUsers: React.FC<{
   setOpenExisting: (value: boolean) => void;
-  workspace: any;
-  filterUsers: (wu: any[], users: any[], flip: boolean) => any[];
+  workspace: Workspace;
+  filterUsers: (wu: WorkspaceUser[], users: User[], flip: boolean) => User[];
   incrementCount: () => void;
 }> = ({ setOpenExisting, workspace, filterUsers, incrementCount }) => {
   const { users } = useSelector((state: RootState) => state.user);
-  const [workspaceUsers, setWorkspaceUsers] = useState<any[]>([]);
+  const [workspaceUsers, setWorkspaceUsers] = useState<WorkspaceUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
-      const res = await axios(
-        `${BASE_URL}/workspace-user/all-users/${workspace._id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await axios(`${BASE_URL}/workspace-user/all-users/${workspace._id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       setWorkspaceUsers(res.data.workspaceUsers);
     };
     fetchData();

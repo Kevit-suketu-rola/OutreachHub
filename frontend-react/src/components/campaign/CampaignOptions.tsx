@@ -1,16 +1,16 @@
 // components/campaigns/CampaignOptions.tsx
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/redux/store";
-import { launchCampaign } from "@/redux/slices/campaignSlice";
+import { Campaign, launchCampaign } from '@/redux/slices/campaignSlice';
+import type { AppDispatch } from '@/redux/store';
 
 export const CampaignOptions = ({
   campaign,
   onEdit,
   onDelete,
 }: {
-  campaign: any;
+  campaign: Campaign;
   onEdit: () => void;
   onDelete: (id: string) => void;
 }) => {
@@ -24,15 +24,15 @@ export const CampaignOptions = ({
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   const handleLaunch = () => {
-    dispatch(launchCampaign(campaign._id));
+    dispatch(launchCampaign(campaign._id || ''));
   };
 
-  if (localStorage.getItem("write") === "false") return null;
+  if (localStorage.getItem('write') === 'false') return null;
 
   return (
     <div className="absolute top-2 right-2" ref={menuRef}>
@@ -56,7 +56,7 @@ export const CampaignOptions = ({
           </button>
           <button
             onClick={() => {
-              onDelete(campaign._id);
+              onDelete(campaign._id || '');
               setOpen(false);
             }}
             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"

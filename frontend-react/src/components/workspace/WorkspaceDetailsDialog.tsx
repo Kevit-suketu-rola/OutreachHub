@@ -1,7 +1,9 @@
+import { Workspace } from '@/redux/slices/workspaceSlice';
+
 export const WorkspaceDetailsDialog: React.FC<{
   open: boolean;
   onClose: () => void;
-  workspace: any;
+  workspace: Workspace;
 }> = ({ open, onClose, workspace }) => {
   if (!open || !workspace) return null;
 
@@ -20,14 +22,10 @@ export const WorkspaceDetailsDialog: React.FC<{
             <strong>Description:</strong> {workspace.description}
           </p>
           <p>
-            <strong>Tags:</strong> {workspace.tags.join(", ")}
+            <strong>Tags:</strong> {workspace.tags.join(', ')}
           </p>
           <p>
-            <strong>Created:</strong>{" "}
-            {new Date(workspace.createdAt).toLocaleString()}
-          </p>
-          <p>
-            <strong>Creator ID:</strong> {workspace.creator}
+            <strong>Created:</strong> {new Date(workspace.createdAt as string).toLocaleString()}
           </p>
         </div>
         <button

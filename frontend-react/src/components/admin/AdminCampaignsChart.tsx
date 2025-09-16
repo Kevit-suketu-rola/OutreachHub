@@ -1,32 +1,27 @@
-import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import { fetchAllCampaigns } from "@/redux/slices/campaignSlice";
+} from '@/components/ui/chart';
+import { Campaign, fetchAllCampaigns } from '@/redux/slices/campaignSlice';
+import type { AppDispatch, RootState } from '@/redux/store';
 
-export const description = "An interactive area chart";
+export const description = 'An interactive area chart';
 
 const chartConfig = {
   visitors: {
-    label: "Visitors",
+    label: 'Visitors',
   },
   running: {
-    label: "Running",
-    color: "var(--primary)",
+    label: 'Running',
+    color: 'var(--primary)',
   },
 } satisfies ChartConfig;
 
@@ -38,12 +33,17 @@ export function AdminCampaignsChart() {
     dispatch(fetchAllCampaigns());
   }, [dispatch]);
 
-  const chartData: any = [];
-  campaigns.map((campaign) => {
-    const month = new Date(campaign.creationDate).getMonth();
+  type CampaignChartData = {
+    month: number;
+    campaigns: number;
+  };
 
-    const idx = chartData.findIndex((item: any) => item.month === month);
-    if (idx !== -1) {
+  const chartData: CampaignChartData[] = [];
+  campaigns.map((campaign: Campaign) => {
+    const month = new Date(campaign.creationDate as string).getMonth();
+
+    const idx = chartData.findIndex((item: CampaignChartData) => item.month === month);
+    if (idx !== -1 && chartData[idx]) {
       chartData[idx].campaigns += 1;
     } else {
       chartData.push({ month, campaigns: 1 });
@@ -51,7 +51,7 @@ export function AdminCampaignsChart() {
     return 0;
   });
 
-  chartData.sort((a: any, b: any) => a.month - b.month);
+  chartData.sort((a: CampaignChartData, b: CampaignChartData) => a.month - b.month);
 
   return (
     <Card className="@container/card sm:w-[50%] sm:py-6">
@@ -64,23 +64,12 @@ export function AdminCampaignsChart() {
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
+        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
           <AreaChart data={chartData}>
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="rgba(70,70,250,0.7)"
-                  stopOpacity={1.0}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="rgba(70,70,250,0.7)"
-                  stopOpacity={0.1}
-                />
+                <stop offset="5%" stopColor="rgba(70,70,250,0.7)" stopOpacity={1.0} />
+                <stop offset="95%" stopColor="rgba(70,70,250,0.7)" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} />
@@ -92,20 +81,20 @@ export function AdminCampaignsChart() {
               minTickGap={32}
               tickFormatter={(month) => {
                 const months = [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
+                  'Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'May',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep',
+                  'Oct',
+                  'Nov',
+                  'Dec',
                 ];
-                return months[month];
+                return months[month] || 'unknown';
               }}
             />
             <ChartTooltip
@@ -113,12 +102,12 @@ export function AdminCampaignsChart() {
               content={
                 <ChartTooltipContent
                   labelFormatter={(_, i) => {
-                    const month = i[0].payload.month;
+                    const month = i[0]?.payload.month;
                     const date = new Date(2025, month, 1);
 
-                    return date.toLocaleDateString("en-US", {
-                      month: "long",
-                      year: "numeric",
+                    return date.toLocaleDateString('en-US', {
+                      month: 'long',
+                      year: 'numeric',
                     });
                   }}
                   indicator="dot"
