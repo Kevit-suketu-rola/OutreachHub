@@ -10,7 +10,7 @@ const UserHome = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!localStorage.getItem('user-token')) navigate('/');
-  });
+  }, []);
 
   return (
     <div>

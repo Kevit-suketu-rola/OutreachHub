@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { IconPlus } from '@tabler/icons-react';
+import { IconArrowLeft, IconPlus } from '@tabler/icons-react';
 
 import { LoaderCircle } from '@/components/LoaderCircle';
 import { MessageTemplateCard } from '@/components/template/MessageTemplateCard';
@@ -15,26 +15,31 @@ import {
   fetchMessageTemplates,
 } from '@/redux/slices/messageTemplateSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
+import { useNavigate } from 'react-router-dom';
 
 export const MessageTemplates = () => {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('');
   const [openCreate, setOpenCreate] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const templatesPerPage = 6;
 
-  const { templates, loading } = useSelector((state: RootState) => state.messageTemplate);
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const templates = useSelector((state: RootState) => state.messageTemplate?.templates);
+  const loading = useSelector((state: RootState) => state.messageTemplate?.loading);
+  const currentWorkspace = useSelector(
+    (state: RootState) => state.user?.currentWorkspace
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (currentWorkspace?.id) dispatch(fetchMessageTemplates(currentWorkspace.id));
   }, [dispatch, currentWorkspace]);
 
-  const filteredTemplates: MessageTemplate[] = templates.filter(
+  const filteredTemplates: MessageTemplate[] = templates?.filter(
     (template: MessageTemplate) =>
       template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.template.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  ) || []
 
   useEffect(() => {
     setCurrentPage(1);
@@ -52,8 +57,10 @@ export const MessageTemplates = () => {
 
   return (
     <div className="overflow-hidden h-full">
+      <div className='flex m-3 text-white cursor-pointer hover:underline' onClick={() => navigate('/user/workspace')}><IconArrowLeft /><span>Dashboard</span></div>
       <h1 className="text-3xl font-bold text-white p-4">Message Templates</h1>
-      <div className="md:flex mb-6">
+
+      <div className="md:flex mb-4">
         <input
           type="text"
           placeholder="Search by title..."
@@ -72,13 +79,13 @@ export const MessageTemplates = () => {
         )}
       </div>
       {!loading && totalPages > 1 && (
-        <div className="pr-10 flex justify-end mt-8 space-x-4 items-center">
+        <div className="pr-10 flex justify-end mt-4 space-x-4 items-center">
           {!loading && totalPages > 1 && (
-            <div className="pr-10 flex justify-end mt-8 space-x-4 items-center">
+            <div className="pr-10 flex justify-end mt-3 space-x-4 items-center">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 rounded-md bg-white text-black font-medium shadow hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-1 rounded-md bg-white text-black font-medium shadow hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 &#0060;
               </button>
@@ -88,7 +95,7 @@ export const MessageTemplates = () => {
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 rounded-md bg-white text-black font-medium shadow hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-1 rounded-md bg-white text-black font-medium shadow hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 &#0062;
               </button>

@@ -1,17 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import TagInput from './TagInput';
-
-export interface Workspace {
-  _id?: string;
-  name?: string;
-  description?: string;
-  tags?: string[];
-  createdAt?: string;
-  isDeleted?: boolean;
-  creator?: string;
-}
+import { Workspace } from '@/redux/slices/workspaceSlice';
 
 interface Props {
   open: boolean;
@@ -31,19 +22,30 @@ const WorkspaceManageModal: React.FC<Props> = ({ open, workspace, onClose, onSub
   const {
     register,
     handleSubmit,
-    setValue,
+    setValue, reset,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      _id: workspace._id || '',
-      name: workspace.name || '',
-      description: workspace.description || '',
-      tags: workspace.tags || [],
+      _id: workspace._id,
+      name: workspace.name,
+      description: workspace.description,
+      tags: workspace.tags,
     },
   });
-  if (!open || !workspace) return null;
 
+  useEffect(() => {
+    if (workspace) {
+      reset({
+        _id: workspace._id,
+        name: workspace.name,
+        description: workspace.description,
+        tags: workspace.tags,
+      });
+    }
+  }, [workspace]);
+
+  if (!open || !workspace) return null;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -64,9 +66,8 @@ const WorkspaceManageModal: React.FC<Props> = ({ open, workspace, onClose, onSub
               id="name"
               {...register('name', { required: 'Name is required' })}
               disabled={isSubmitting}
-              className={`w-full px-3 py-2 border rounded ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`w-full px-3 py-2 border rounded ${errors.name ? 'border-red-500' : 'border-gray-300'
+                }`}
             />
             {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
           </div>
@@ -82,9 +83,8 @@ const WorkspaceManageModal: React.FC<Props> = ({ open, workspace, onClose, onSub
                 required: 'Description is required',
               })}
               disabled={isSubmitting}
-              className={`w-full px-3 py-2 border rounded resize-none ${
-                errors.description ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`w-full px-3 py-2 border rounded resize-none ${errors.description ? 'border-red-500' : 'border-gray-300'
+                }`}
             />
             {errors.description && (
               <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>

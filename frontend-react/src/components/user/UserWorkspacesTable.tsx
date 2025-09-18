@@ -20,22 +20,42 @@ import { fetchAllWorkspacesOfUser } from '@/redux/slices/workspaceSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
 
 import { LoaderCircle } from '../LoaderCircle';
+import { getUsersPerWorkspace } from '@/redux/slices/workspaceUserSlice';
 
 const UserWorkspacesTable = () => {
-  const { userWorkspaces, userWorkspacesLoading } = useSelector(
-    (state: RootState) => state.workspace,
+  const [userCounts, setUserCounts] = useState<[]>([]);
+
+  const userWorkspaces = useSelector(
+    (state: RootState) => state.workspace?.userWorkspaces,
   );
+
+  const userWorkspacesLoading = useSelector(
+    (state: RootState) => state.workspace?.userWorkspacesLoading,
+  );
+
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchAllWorkspacesOfUser());
-    dispatch(setCurrentWorkspace({ workspaceId: '', name: '' }));
+    const fetchData = async () => {
+      await dispatch(fetchAllWorkspacesOfUser());
+      dispatch(setCurrentWorkspace({ workspaceId: '', name: '' }));
+
+      const resultAction = await dispatch(getUsersPerWorkspace());
+
+      if (getUsersPerWorkspace.fulfilled.match(resultAction)) {
+        setUserCounts(resultAction.payload.count);
+      }
+    };
+
+    fetchData();
   }, [dispatch]);
 
-  const filteredData = userWorkspaces.filter(
+
+
+  const filteredData = userWorkspaces?.filter(
     (row) =>
       typeof row?.workspaceId !== 'string' &&
       row?.workspaceId?.name?.toLowerCase().includes(search.toLowerCase()),
@@ -69,13 +89,14 @@ const UserWorkspacesTable = () => {
                 <TableCell>
                   <strong>Permissions</strong>
                 </TableCell>
+                <TableCell>Users</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
               {!userWorkspacesLoading ? (
-                filteredData.map((row, index) => (
+                filteredData?.map((row, index) => (
                   <TableRow key={index} className="hover:bg-violet-100">
                     <TableCell>{row.workspaceId.name}</TableCell>
                     <TableCell>
@@ -90,6 +111,11 @@ const UserWorkspacesTable = () => {
                           />
                         ) : null,
                       )}
+                    </TableCell>
+                    <TableCell>
+
+                      <div>{userCounts?.find(item => item.workspaceId === row.workspaceId._id)?.userCount}</div>
+
                     </TableCell>
                     <TableCell>
                       <button
@@ -111,7 +137,7 @@ const UserWorkspacesTable = () => {
                 </TableRow>
               )}
 
-              {!userWorkspacesLoading && filteredData.length === 0 && (
+              {!userWorkspacesLoading && filteredData?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={2} align="center">
                     No results found

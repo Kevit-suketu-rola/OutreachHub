@@ -9,14 +9,17 @@ import { CampaignsTable } from '../campaign/CampaignsTable';
 import { UserBarChart } from '../shadcn/BarChart';
 import { AdminCampaignsChart } from './AdminCampaignsChart';
 import { AdminSectionCards } from './AdminSectionCards';
+import { fetchAllUsers } from '@/redux/slices/userSlice';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { campaigns } = useSelector((state: RootState) => state.campaign);
+  const campaigns = useSelector((state: RootState) => state.campaign?.campaigns);
+  const users = useSelector((state: RootState) => state.user?.users);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchAllCampaigns());
+    dispatch(fetchAllUsers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -26,12 +29,12 @@ export const AdminDashboard = () => {
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 py-4 sm:gap-6 md:py-6">
-          <AdminSectionCards campaigns={campaigns} />
+          <AdminSectionCards campaigns={campaigns || []} users={users || []} />
           <div className="px-4 lg:px-6 sm:flex xs:flex-col gap-3 justify-between">
-            <UserBarChart />
-            <AdminCampaignsChart />
+            <UserBarChart users={users || []} />
+            <AdminCampaignsChart campaigns={campaigns || []} />
           </div>
-          <CampaignsTable />
+          <CampaignsTable campaigns={campaigns || []} />
         </div>
       </div>
     </div>

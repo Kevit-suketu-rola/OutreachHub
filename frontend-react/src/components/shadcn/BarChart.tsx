@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
@@ -18,8 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { fetchAllUsers } from '@/redux/slices/userSlice';
-import type { AppDispatch, RootState } from '@/redux/store';
+import { User } from '@/redux/slices/userSlice';
 
 export const description = 'A bar chart';
 
@@ -35,13 +32,13 @@ type UsersChartData = {
   users: number;
 };
 
-export function UserBarChart() {
-  const { users } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<AppDispatch>();
+export const UserBarChart: React.FC<{ users: User[] }> = ({ users }) => {
+  // const { users } = useSelector((state: RootState) => state.user);
+  // const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAllUsers());
+  // }, [dispatch]);
 
   const chartData: UsersChartData[] = [];
   users.map((user) => {

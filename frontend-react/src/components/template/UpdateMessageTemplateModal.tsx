@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { MessageTemplate } from '@/redux/slices/messageTemplateSlice';
@@ -10,7 +10,7 @@ export type TemplateFormValues = {
   title: string;
   template: string;
   type: 'text' | 'text-image';
-  templateImage?: string;
+  templateImagee?: string;
 };
 
 type Props = {
@@ -33,10 +33,14 @@ export const UpdateMessageTemplateModal: React.FC<Props> = ({ template, onClose,
     },
   });
 
-  const [typeImg, setTypeImg] = useState(template.type || 'text');
-  const typeValue = watch('type'); // read from form
-  const [isChecked, setIsChecked] = useState(typeValue === 'text-image');
+  const [isChecked, setIsChecked] = useState(false);
   const methods = useForm();
+
+  useEffect(() => {
+    if (template.templateImage) {
+      setIsChecked(true);
+    }
+  }, [])
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center">
@@ -64,14 +68,13 @@ export const UpdateMessageTemplateModal: React.FC<Props> = ({ template, onClose,
                 onChange={(e) => {
                   const newValue = e.target.checked ? 'text-image' : 'text';
                   if (newValue === 'text') setValue('type', newValue);
-                  setTypeImg(newValue);
                   setIsChecked(e.target.checked);
                 }}
               />
             </div>
-            {typeImg === 'text-image' && (
+            {isChecked && (
               <div>
-                <FileUploadField name="templateImage" label="Template Image" />
+                <FileUploadField name="templateImagee" label="Template Image" url={template.templateImage} />
               </div>
             )}
             <div>

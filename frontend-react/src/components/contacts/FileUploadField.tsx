@@ -21,9 +21,10 @@ interface FileUploadFieldProps {
   name: string;
   label: string;
   description?: string;
+  url?: string | undefined
 }
 
-export function FileUploadField({ name, label, description }: FileUploadFieldProps) {
+export const FileUploadField: React.FC<FileUploadFieldProps> = ({ name, label, description, url }) => {
   const { control, watch, setValue } = useFormContext();
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const token = localStorage.getItem('user-token') || 'unauthorized';
@@ -68,8 +69,8 @@ export function FileUploadField({ name, label, description }: FileUploadFieldPro
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20 border">
-              <AvatarImage src={currentImageUrl} alt="Image Preview" />
+            <Avatar className={`h-20 w-20 border ${name === 'templateImagee' ? 'rounded-none w-24' : ''}`}>
+              <AvatarImage src={currentImageUrl || url} alt="Image Preview" />
               <AvatarFallback>PIC</AvatarFallback>
             </Avatar>
 
@@ -79,7 +80,7 @@ export function FileUploadField({ name, label, description }: FileUploadFieldPro
                   type="file"
                   onChange={handleFileChange}
                   disabled={isUploading}
-                  accept="image/png, image/jpeg, image/gif"
+                  accept="image/png, image/jpeg, image/jpg"
                 />
               </FormControl>
               {isUploading && (

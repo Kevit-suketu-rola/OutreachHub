@@ -9,9 +9,10 @@ interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   workspace: Workspace;
+  incrementCount: () => void;
 }
 
-export const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, workspace }) => {
+export const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, workspace, incrementCount }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,6 +50,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClos
       },
     };
     dispatch(createUser(data));
+    incrementCount()
     onClose();
   };
 

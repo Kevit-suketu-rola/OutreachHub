@@ -33,6 +33,14 @@ export const UpdateCampaignModal: React.FC<Props> = ({
   onClose,
   onSubmit,
 }) => {
+
+  const format = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   const {
     register,
     handleSubmit,
@@ -44,13 +52,20 @@ export const UpdateCampaignModal: React.FC<Props> = ({
       _id: campaign._id || '',
       name: campaign.name || '',
       tags: campaign.tags || [],
-      startDate: campaign.startDate || '',
-      endDate: campaign.endDate || '',
+      startDate: campaign.startDate
+        ? format(new Date(campaign.startDate))
+        : '',
+      endDate: campaign.endDate
+        ? format(new Date(campaign.endDate))
+        : '',
       templateId: (campaign.templateId as string) || '',
     },
   });
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const currentWorkspace = useSelector(
+    (state: RootState) => state.user?.currentWorkspace
+  );
   const dispatch = useDispatch<AppDispatch>();
+
 
   useEffect(() => {
     dispatch(fetchMessageTemplates(currentWorkspace?.id));

@@ -6,15 +6,20 @@ import { CampaignCard } from '@/components/campaign/CamaignCard';
 import { UpdateCampaignModal } from '@/components/campaign/UpdateCampaignModal';
 import { Campaign, createCampaign, getAllCampaignsOfWorkspace } from '@/redux/slices/campaignSlice';
 import type { AppDispatch, RootState } from '@/redux/store';
+import { IconArrowLeft, IconArrowLeftCircle, IconArrowLeftCircleFilled } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Campaigns = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [search, setSearch] = useState('');
   const [openCreate, setOpenCreate] = useState(false);
-
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
-  const { workspaceCampaigns, loading } = useSelector((state: RootState) => state.campaign);
-  const { templates } = useSelector((state: RootState) => state.messageTemplate);
+  const navigate = useNavigate()
+  const currentWorkspace = useSelector(
+    (state: RootState) => state.user?.currentWorkspace
+  );
+  const workspaceCampaigns = useSelector((state: RootState) => state.campaign?.workspaceCampaigns);
+  const loading = useSelector((state: RootState) => state.campaign?.loading);
+  const templates = useSelector((state: RootState) => state.messageTemplate?.templates);
 
   useEffect(() => {
     if (currentWorkspace?.id) {
@@ -22,7 +27,7 @@ export const Campaigns = () => {
     }
   }, [currentWorkspace, dispatch]);
 
-  const filtered = workspaceCampaigns.filter((c) =>
+  const filtered = workspaceCampaigns?.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -33,6 +38,7 @@ export const Campaigns = () => {
 
   return (
     <div className="overflow-hidden h-full">
+      <div className='flex m-3 text-white cursor-pointer hover:underline' onClick={() => navigate('/user/workspace')}><IconArrowLeft /><span>Dashboard</span></div>
       <h1 className="text-3xl font-bold text-white p-4">Campaigns</h1>
       <div className="md:flex mb-6 items-center">
         <input
@@ -54,7 +60,7 @@ export const Campaigns = () => {
 
       <div className="m-10 grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {!loading ? (
-          filtered.map((c) => {
+          filtered?.map((c) => {
             return <CampaignCard key={c._id} campaign={c} />;
           })
         ) : (
@@ -71,7 +77,7 @@ export const Campaigns = () => {
             endDate: new Date(),
             tags: [],
           }}
-          templates={templates}
+          templates={templates || []}
           onClose={() => setOpenCreate(false)}
           onSubmit={handleCreate}
         />

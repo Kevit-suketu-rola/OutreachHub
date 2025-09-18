@@ -14,10 +14,14 @@ const AdminHome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!localStorage.getItem('token')) navigate('/');
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchAllCampaigns());
   }, [dispatch]);
 
-  if (!localStorage.getItem('token')) navigate('/login');
+
 
   return (
     <div>

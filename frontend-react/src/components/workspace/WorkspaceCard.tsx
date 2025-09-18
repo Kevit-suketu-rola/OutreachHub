@@ -27,7 +27,7 @@ const WorkspaceCard: React.FC<{
   const [openUsers, setOpenUsers] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userCount, setUserCount] = useState(0);
-  const { users } = useSelector((state: RootState) => state.user);
+  const users = useSelector((state: RootState) => state.user?.users);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +99,7 @@ const WorkspaceCard: React.FC<{
               setOpenUsers={setOpenUsers}
             />
           </div>
-          <p className="text-sm text-muted-foreground">{workspace.description}</p>
+          <p className="text-sm text-muted-foreground">{workspace.description.length > 50 ? workspace.description.slice(0, 50) + '...' : workspace.description}</p>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-1">
@@ -137,6 +137,7 @@ const WorkspaceCard: React.FC<{
             isOpen={openCreate}
             onClose={() => setOpenCreate(false)}
             workspace={workspace}
+            incrementCount={() => setUserCount(userCount + 1)}
           />
         </div>
       )}
@@ -144,7 +145,7 @@ const WorkspaceCard: React.FC<{
       {openUsers && (
         <div>
           <WorkspaceUsersModal
-            users={filterUsers(workspaceUsers, users, false)}
+            users={filterUsers(workspaceUsers, users || [], false)}
             setOpenUsers={setOpenUsers}
             workspace={workspace}
             decrementCount={() => setUserCount(userCount - 1)}

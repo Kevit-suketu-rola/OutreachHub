@@ -13,7 +13,7 @@ const Auth = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-300 to-purple-600 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">{renderForm()}</div>
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">{(location.pathname === '/admin-login') ? <AdminLoginForm /> : <LoginForm />}</div>
     </div>
   );
 };

@@ -13,7 +13,8 @@ type FormData = {
 
 export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const loading = useSelector((state: RootState) => state.auth?.loading);
+  const error = useSelector((state: RootState) => state.auth?.error);
   const navigate = useNavigate();
 
   const {
@@ -27,6 +28,7 @@ export default function LoginForm() {
       navigate('/user');
     }
   }, []);
+
   const onSubmit = async (data: FormData) => {
     const resultAction = await dispatch(loginUser(data));
 
@@ -34,8 +36,6 @@ export default function LoginForm() {
       setTimeout(() => {
         navigate('/user');
       }, 200);
-    } else {
-      alert('Error logging in: ' + resultAction.payload);
     }
   };
 
@@ -57,9 +57,8 @@ export default function LoginForm() {
                 message: 'Invalid email address',
               },
             })}
-            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.email ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
-            }`}
+            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${errors.email ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
+              }`}
           />
           {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>}
         </div>
@@ -74,9 +73,8 @@ export default function LoginForm() {
             {...register('password', {
               required: 'Password is required',
             })}
-            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.password ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
-            }`}
+            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${errors.password ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
+              }`}
           />
           {errors.password && (
             <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>

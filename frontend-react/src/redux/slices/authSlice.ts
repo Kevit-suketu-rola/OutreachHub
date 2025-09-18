@@ -100,10 +100,12 @@ export const loginAdmin = createAsyncThunk(
   async (credentials: { email: string; password: string }, thunkAPI) => {
     try {
       const response = await axiosInstance.post('/admin/login', credentials);
-      return {
-        email: credentials.email,
-        token: response.data.token,
-      };
+      if (response.data.token)
+        return {
+          email: credentials.email,
+          token: response.data.token,
+        };
+      throw new Error('Token not found');
     } catch (error) {
       console.error('Error while logging in:', error);
       return thunkAPI.rejectWithValue('Error during login.');

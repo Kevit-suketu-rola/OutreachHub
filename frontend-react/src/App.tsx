@@ -18,8 +18,8 @@ import { RootState } from './redux/store';
 
 function App() {
   const isUserAuthenticated =
-    typeof useSelector((state: RootState) => state.auth.email) === 'string';
-  const isAdminAuthenticated = useSelector((state: RootState) => state.auth.isAdmin);
+    typeof useSelector((state: RootState) => state.auth?.email) === 'string';
+  const isAdminAuthenticated = useSelector((state: RootState) => state.auth?.isAdmin);
   return (
     <Router>
       <Routes>
@@ -29,7 +29,7 @@ function App() {
         <Route path="/admin-login" element={<Auth />} />
 
         {/* Admin */}
-        <Route element={<PrivateRoute isAllowed={isAdminAuthenticated} />}>
+        <Route element={<PrivateRoute isAllowed={isAdminAuthenticated || false} />}>
           <Route path="/admin" element={<AdminHome />}>
             <Route index element={<AdminDashboard />} />
             <Route path="workspaces" element={<AdminWorkspacesPage />} />

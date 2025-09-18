@@ -40,7 +40,12 @@ export const MessageTemplateCard = ({ template }: { template: MessageTemplate })
           className="w-full h-auto rounded-md mt-2"
         />
       )}
-      <p className="text-sm text-gray-600 whitespace-pre-wrap mt-2">{template.template}</p>
+      <p className="text-sm text-gray-600 mt-2">
+        {template.template.length > 50
+          ? template.template.slice(0, 50) + '...'
+          : template.template}
+      </p>
+
       <MessageTemplateOptions template={template} onEdit={onEdit} onDelete={onDelete} />
       {openUpdate && (
         <UpdateMessageTemplateModal

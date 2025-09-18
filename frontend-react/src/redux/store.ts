@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { PERSIST, persistReducer, persistStore } from 'redux-persist';
+import createTransform from 'redux-persist/es/createTransform';
 import storage from 'redux-persist/lib/storage';
 
 import authReducer from './slices/authSlice';
@@ -10,10 +11,17 @@ import userReducer from './slices/userSlice';
 import workspaceReducer from './slices/workspaceSlice';
 import workspaceUserReducer from './slices/workspaceUserSlice';
 
+const userTransform = createTransform<Record<string, any>, Partial<Record<string, any>>>(
+  (inboundState) => ({ currentWorkspace: inboundState.currentWorkspace }),
+  (outboundState) => ({ currentWorkspace: outboundState.currentWorkspace }),
+  { whitelist: ['user'] },
+);
+
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth','user'],
+  whitelist: ['auth', 'user'],
+  transforms: [userTransform],
 };
 
 const rootReducer = combineReducers({

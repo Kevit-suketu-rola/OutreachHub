@@ -5,8 +5,10 @@ import type { RootState } from '@/redux/store';
 import LogoutButton from '../auth/LogoutButton';
 
 export function SiteHeader() {
-  const { isAdmin } = useSelector((state: RootState) => state.auth);
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const isAdmin = useSelector((state: RootState) => state.auth?.isAdmin);
+  const currentWorkspace = useSelector(
+    (state: RootState) => state.user?.currentWorkspace
+  );
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">

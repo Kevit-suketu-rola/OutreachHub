@@ -13,7 +13,8 @@ type FormData = {
 
 export default function AdminLoginForm() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const loading = useSelector((state: RootState) => state.auth?.loading);
+  const error = useSelector((state: RootState) => state.auth?.error);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,9 +31,8 @@ export default function AdminLoginForm() {
     const resultAction = await dispatch(loginAdmin(data));
 
     if (loginAdmin.fulfilled.match(resultAction)) {
-      navigate('/admin');
-    } else {
-      alert('Error logging in: ' + resultAction.payload);
+      if (localStorage.getItem('token'))
+        navigate('/admin');
     }
   };
 
@@ -54,9 +54,8 @@ export default function AdminLoginForm() {
                 message: 'Invalid email address',
               },
             })}
-            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.email ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
-            }`}
+            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${errors.email ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
+              }`}
           />
           {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>}
         </div>
@@ -71,9 +70,8 @@ export default function AdminLoginForm() {
             {...register('password', {
               required: 'Password is required',
             })}
-            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
-              errors.password ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
-            }`}
+            className={`w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${errors.password ? 'focus:ring-red-500 border-red-500' : 'focus:ring-blue-500'
+              }`}
           />
           {errors.password && (
             <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>

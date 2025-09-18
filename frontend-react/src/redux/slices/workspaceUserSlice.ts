@@ -60,6 +60,23 @@ export const getUsersForUser = createAsyncThunk(
   },
 );
 
+export const getUsersPerWorkspace = createAsyncThunk(
+  'user/getUsersPerWorkspace',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`users-per-workspace`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user-token')}`,
+        },
+      });
+
+      return { count: response.data.count };
+    } catch {
+      return rejectWithValue('Fetch failed');
+    }
+  },
+);
+
 export const addUser = createAsyncThunk(
   'admin/addUser',
   async (obj: {
@@ -107,6 +124,7 @@ interface WorkspaceState {
   users: User[];
   loading: boolean;
   error: string | null;
+  count?: { userCount: number; workspaceId: string }[] | [];
 }
 
 export type WorkspaceUser = {
@@ -127,6 +145,7 @@ const initialState: WorkspaceState = {
   users: [],
   loading: false,
   error: null,
+  count: [],
 };
 
 const WorkspaceSlice = createSlice({
@@ -182,6 +201,14 @@ const WorkspaceSlice = createSlice({
       .addCase(removeUser.fulfilled, (state: WorkspaceState) => {
         state.loading = false;
         state.error = null;
+      })
+      .addCase(getUsersPerWorkspace.pending, (state: WorkspaceState) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUsersPerWorkspace.fulfilled, (state: WorkspaceState, action) => {
+        state.loading = false;
+        state.count = action.payload.count;
       });
   },
 });

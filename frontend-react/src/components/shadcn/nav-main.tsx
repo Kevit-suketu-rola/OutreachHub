@@ -28,8 +28,10 @@ export function NavMain({
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
-  const { isAdmin } = useSelector((state: RootState) => state.auth);
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+  const isAdmin = useSelector((state: RootState) => state.auth?.isAdmin);
+  const currentWorkspace = useSelector(
+    (state: RootState) => state.user?.currentWorkspace
+  );
   const location = useLocation();
 
   const handleCreateWorkspace = (workspace: Workspace) => {

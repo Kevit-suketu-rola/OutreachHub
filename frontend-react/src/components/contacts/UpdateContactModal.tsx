@@ -63,6 +63,7 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
                 label="Profile Picture"
                 // watch={watch}
                 // setValue={setValue}
+                url={contact.profilePicture}
               />
             </div>
 

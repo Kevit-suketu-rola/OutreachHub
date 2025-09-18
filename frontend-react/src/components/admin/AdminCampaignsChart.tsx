@@ -25,8 +25,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function AdminCampaignsChart() {
-  const { campaigns } = useSelector((state: RootState) => state.campaign);
+export const AdminCampaignsChart: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
+  // const { campaigns } = useSelector((state: RootState) => state.campaign);
   const dispatch = useDispatch<AppDispatch>();
 
   React.useEffect(() => {

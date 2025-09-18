@@ -4,7 +4,9 @@ import UserDashboard from '@/components/user/UserDashboard';
 import type { RootState } from '@/redux/store';
 
 const WorkSpace = () => {
-  const { currentWorkspace } = useSelector((state: RootState) => state.user);
+const currentWorkspace = useSelector(
+  (state: RootState) => state.user?.currentWorkspace
+);
 
   return (
     <div>

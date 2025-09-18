@@ -6,8 +6,8 @@ import type { AppDispatch, RootState } from '@/redux/store';
 
 import { CampaignDetailsModal } from './CampaignDetailsModal';
 
-export const CampaignsTable = () => {
-  const { workspaceCampaigns, campaign, loading, campaigns } = useSelector(
+export const CampaignsTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
+  const { workspaceCampaigns, campaign, loading } = useSelector(
     (state: RootState) => state.campaign,
   );
   const { isAdmin } = useSelector((state: RootState) => state.auth);
