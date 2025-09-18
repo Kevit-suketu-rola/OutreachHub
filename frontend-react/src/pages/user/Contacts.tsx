@@ -19,6 +19,19 @@ export const Contacts = () => {
   const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
+  // debouncing
+  const [debouncedValue, setDebouncedValue] = useState(searchQuery);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(searchQuery);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
   useEffect(() => {
     dispatch(fetchContactsOfWorkspace(currentWorkspace?.id));
   }, [dispatch, currentWorkspace?.id]);
@@ -33,7 +46,7 @@ export const Contacts = () => {
   };
 
   const filteredContacts = contacts.filter((contact) => {
-    const query = searchQuery.toLowerCase();
+    const query = debouncedValue.toLowerCase();
     return (
       contact.name.toLowerCase().includes(query) ||
       contact.contactInfo.email.toLowerCase().includes(query) ||
@@ -65,7 +78,7 @@ export const Contacts = () => {
         />
         {localStorage.getItem('write') === 'true' && (
           <button
-            className="flex justify-center mx-10 my-3 md:m-0 items-center gap-2 px-4 py-2 rounded bg-transparent border-2 font-bold border-white text-white hover:bg-white hover:text-black"
+            className="flex justify-center mx-10 my-3 md:m-0 items-center gap-2 px-4 py-2 rounded bg-transparent border-2 font-bold border-white text-white hover:bg-white hover:text-black transition"
             onClick={HandleCreateClick}
           >
             <IconPlus className="mx-auto" />

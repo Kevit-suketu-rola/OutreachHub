@@ -91,7 +91,7 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { reject
     }
   } catch (error) {
     console.error('Error while logging in:', error);
-    return rejectWithValue('Error during logging out.');
+    return rejectWithValue('Error during login.');
   }
 });
 
@@ -154,6 +154,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
+        state.token = action.payload.token;
+        state.email = action.payload.email;
         localStorage.setItem('user-token', action.payload.token);
         localStorage.setItem('userId', action.payload.userId);
         localStorage.setItem('username', action.payload.name);

@@ -136,7 +136,6 @@ export type Workspace = {
   name: string;
   description: string;
   tags: string[];
-  isDeleted?: boolean;
   createdAt?: string;
 };
 

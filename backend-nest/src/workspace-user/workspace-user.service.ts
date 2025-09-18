@@ -132,7 +132,7 @@ export class WorkspaceUserService {
         userId: userId,
         isDeleted: false,
       })
-      .populate('workspaceId', 'name');
+      .populate('workspaceId', 'name tags');
 
     if (workspaces.length === 0) {
       throw new HttpException('No workspaces found', HttpStatus.NOT_FOUND);

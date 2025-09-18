@@ -1,9 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-import { createAxiosInstance } from './authSlice';
+import { BASE_URL } from './authSlice';
 import { Workspace } from './workspaceSlice';
 
-export const axiosInstance = createAxiosInstance('user');
+const axiosInstance = axios.create({
+  baseURL: `${BASE_URL}/user`,
+  timeout: 2000,
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export const fetchAllUsers = createAsyncThunk(
   'admin/fetchAllUsers',
@@ -123,6 +128,7 @@ export const createUser = createAsyncThunk(
 export const setCurrentWorkspace = createAsyncThunk(
   'user/setCurrentWorkspace',
   async ({ workspaceId, name }: { workspaceId: string; name: string }, { rejectWithValue }) => {
+    if (name === '') return { id: workspaceId, name: name };
     try {
       await axiosInstance.post(
         '/set-current-workspace',

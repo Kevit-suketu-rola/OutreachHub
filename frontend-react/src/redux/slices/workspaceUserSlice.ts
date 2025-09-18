@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-import {  createAxiosInstance } from './authSlice';
+import { BASE_URL } from './authSlice';
 import { User } from './userSlice';
 import { Workspace } from './workspaceSlice';
 
-export const axiosInstance = createAxiosInstance('workspace-user');
+export const axiosInstance = axios.create({
+  baseURL: `${BASE_URL}/workspace-user`,
+  timeout: 2000,
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export const fetchAWorkspaceUser = createAsyncThunk(
   'user/fetchAWorkspaceUser',

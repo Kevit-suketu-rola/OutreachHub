@@ -29,6 +29,7 @@ export function NavMain({
   const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const { isAdmin } = useSelector((state: RootState) => state.auth);
+  const { currentWorkspace } = useSelector((state: RootState) => state.user);
   const location = useLocation();
 
   const handleCreateWorkspace = (workspace: Workspace) => {
@@ -46,7 +47,7 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip="Create Workspace"
                   className=" text-blue-600 bg-white font-bold border border-blue-600 hover:text-white hover:bg-blue-600 transition active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpen(true)}
                 >
                   <IconCirclePlusFilled />
                   <span>Create Workspace</span>
@@ -57,7 +58,7 @@ export function NavMain({
           <SidebarMenu>
             {items.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} onClick={() => navigate(item.url)}>
+                <SidebarMenuButton tooltip={item.title} onClick={() => navigate(item.url)} aria-disabled={currentWorkspace?.name === "" && !isAdmin}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                   {!isAdmin && location.pathname !== '/user' && item.title === 'Home' && (

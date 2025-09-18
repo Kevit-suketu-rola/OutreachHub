@@ -103,20 +103,9 @@ const WorkspaceCard: React.FC<{
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-1">
-            <div className="px-">
-              {workspace.tags && workspace.tags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {workspace.tags.map((tag: string, index: number) => (
-                    <span
-                      key={index}
-                      className="bg-blue-200 text-blue-800 text-xs font-medium px-2 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
+            <p>
+              <strong>Tags:</strong> {workspace.tags.join(', ')}
+            </p>
             <p>
               <strong>Users:</strong> {userCount}
             </p>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import WorkspaceCard from '@/components/workspace/WorkspaceCard';
+import { WorkspaceDetailsDialog } from '@/components/workspace/WorkspaceDetailsDialog';
 import WorkspaceManageModal from '@/components/workspace/WorkspaceManageModal';
 import { fetchAllUsers } from '@/redux/slices/userSlice';
 import {
@@ -13,6 +14,12 @@ import {
 import type { AppDispatch, RootState } from '@/redux/store';
 
 export default function WorkspacesPage() {
+  const [selectedWorkspace, setSelectedWorkspace] = useState({
+    _id: '',
+    name: '',
+    description: '',
+    tags: [],
+  });
   const { workspaces } = useSelector((state: RootState) => state.workspace);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -20,6 +27,15 @@ export default function WorkspacesPage() {
     dispatch(fetchAllWorkspaces());
     dispatch(fetchAllUsers());
   }, [dispatch]);
+
+  const handleCloseDialog = () => {
+    setSelectedWorkspace({
+      _id: '',
+      name: '',
+      description: '',
+      tags: [],
+    });
+  };
 
   const [editingWorkspace, setEditingWorkspace] = useState<Workspace>({
     _id: '',
@@ -29,7 +45,8 @@ export default function WorkspacesPage() {
   });
 
   const handleDelete = (workspaceId: string) => {
-    dispatch(deleteWorkspace(workspaceId));
+    if (confirm("Are you sure you want to delete this workspace?"))
+      dispatch(deleteWorkspace(workspaceId));
   };
 
   const handleEditClick = (workspace: Workspace) => {
@@ -68,7 +85,13 @@ export default function WorkspacesPage() {
         )}
       </div>
 
-      {editingWorkspace._id !== '' && (
+      <WorkspaceDetailsDialog
+        open={selectedWorkspace._id !== ''}
+        onClose={handleCloseDialog}
+        workspace={selectedWorkspace}
+      />
+
+      {editingWorkspace && (
         <WorkspaceManageModal
           open={editingWorkspace._id !== ''}
           workspace={editingWorkspace}

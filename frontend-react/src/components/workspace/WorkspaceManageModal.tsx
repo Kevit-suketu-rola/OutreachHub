@@ -2,7 +2,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import TagInput from './TagInput';
-import { Workspace } from '@/redux/slices/workspaceSlice';
+
+export interface Workspace {
+  _id?: string;
+  name?: string;
+  description?: string;
+  tags?: string[];
+  createdAt?: string;
+  isDeleted?: boolean;
+  creator?: string;
+}
 
 interface Props {
   open: boolean;
@@ -18,7 +27,7 @@ interface FormData {
   tags: string[];
 }
 
-const WorkspaceManageModal: React.FC<Props> = ({ open = false, workspace, onClose, onSubmit }) => {
+const WorkspaceManageModal: React.FC<Props> = ({ open, workspace, onClose, onSubmit }) => {
   const {
     register,
     handleSubmit,

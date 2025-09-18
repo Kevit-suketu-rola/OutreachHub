@@ -1,8 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-import { createAxiosInstance } from './authSlice';
+import { BASE_URL } from './authSlice';
 
-export const axiosInstance = createAxiosInstance('contact');
+const axiosInstance = axios.create({
+  baseURL: `${BASE_URL}/contact`,
+  timeout: 2000,
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export const fetchAllContacts = createAsyncThunk(
   'admin/fetchAllContacts',

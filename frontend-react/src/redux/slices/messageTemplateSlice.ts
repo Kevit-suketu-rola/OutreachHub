@@ -1,8 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-import { createAxiosInstance, navigateLogin } from './authSlice';
+import { BASE_URL, navigateLogin } from './authSlice';
 
-export const axiosInstance = createAxiosInstance('message-template');
+const axiosInstance = axios.create({
+  baseURL: `${BASE_URL}/message-template`,
+  timeout: 2000,
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export const fetchMessageTemplates = createAsyncThunk(
   'template/fetchAll',

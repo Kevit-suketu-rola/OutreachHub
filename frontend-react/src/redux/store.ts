@@ -13,7 +13,7 @@ import workspaceUserReducer from './slices/workspaceUserSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'user'],
+  whitelist: ['auth','user'],
 };
 
 const rootReducer = combineReducers({

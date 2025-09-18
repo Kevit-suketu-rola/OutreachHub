@@ -32,6 +32,7 @@ const UserWorkspacesTable = () => {
 
   useEffect(() => {
     dispatch(fetchAllWorkspacesOfUser());
+    dispatch(setCurrentWorkspace({ workspaceId: '', name: '' }));
   }, [dispatch]);
 
   const filteredData = userWorkspaces.filter(
