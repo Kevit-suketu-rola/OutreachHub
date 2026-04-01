@@ -19,6 +19,7 @@ import { CampaignMessageModule } from './campaign-message/campaign-message.modul
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
