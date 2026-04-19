@@ -29,20 +29,20 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const methods = useForm<ContactFormValues>({
+    defaultValues: contact,
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
     watch,
-  } = useForm<ContactFormValues>({
-    defaultValues: contact,
-  });
-
-  const methods = useForm();
+  } = methods;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center border">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-xl p-6 relative">
         <button
           onClick={onClose}
@@ -51,7 +51,7 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
           &times;
         </button>
 
-        <h2 className="text-2xl font-semibold mb-6">
+        <h2 className="text-2xl font-semibold mb-6 text-black border-b-2">
           {contact.name.length > 0 ? 'Edit Contact' : 'Add Contact'}
         </h2>
         <FormProvider {...methods}>
@@ -61,89 +61,93 @@ export const UpdateContactModal: React.FC<UpdateContactModalProps> = ({
               <FileUploadField
                 name="profilePicture"
                 label="Profile Picture"
-                // watch={watch}
-                // setValue={setValue}
                 url={contact.profilePicture}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                {...register('name', { required: 'Name is required' })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+            <div className='flex gap-2 w-full'>
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <input
+                  type="text"
+                  {...register('name', { required: 'Name is required' })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+                {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+              </div>
+
+              {/* Country Code */}
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Country Code</label>
+                <input
+                  type="text"
+                  {...register('contactInfo.countryCode', {
+                    required: 'Country code is required',
+                  })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+                {errors.contactInfo?.countryCode && (
+                  <p className="text-red-500 text-sm">{errors.contactInfo.countryCode.message}</p>
+                )}
+              </div>
             </div>
 
-            {/* Country Code */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Country Code</label>
-              <input
-                type="text"
-                {...register('contactInfo.countryCode', {
-                  required: 'Country code is required',
-                })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-              {errors.contactInfo?.countryCode && (
-                <p className="text-red-500 text-sm">{errors.contactInfo.countryCode.message}</p>
-              )}
+            <div className='flex gap-2 w-full'>
+              {/* Email */}
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  {...register('contactInfo.email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: 'Invalid email format',
+                    },
+                  })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+                {errors.contactInfo?.email && (
+                  <p className="text-red-500 text-sm">{errors.contactInfo.email.message}</p>
+                )}
+              </div>
+
+              {/* Phone Number */}
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input
+                  type="number"
+                  {...register('contactInfo.phoneNumber', {
+                    required: 'Phone number is required',
+                  })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+                {errors.contactInfo?.phoneNumber && (
+                  <p className="text-red-500 text-sm">{errors.contactInfo.phoneNumber.message}</p>
+                )}
+              </div>
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                {...register('contactInfo.email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: 'Invalid email format',
-                  },
-                })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-              {errors.contactInfo?.email && (
-                <p className="text-red-500 text-sm">{errors.contactInfo.email.message}</p>
-              )}
-            </div>
+            <div className='flex gap-2 w-full'>
+              {/* Job Title */}
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Job Title</label>
+                <input
+                  type="text"
+                  {...register('jobTitle')}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+              </div>
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-              <input
-                type="number"
-                {...register('contactInfo.phoneNumber', {
-                  required: 'Phone number is required',
-                })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-              {errors.contactInfo?.phoneNumber && (
-                <p className="text-red-500 text-sm">{errors.contactInfo.phoneNumber.message}</p>
-              )}
-            </div>
-
-            {/* Job Title */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Job Title</label>
-              <input
-                type="text"
-                {...register('jobTitle')}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-            </div>
-
-            {/* Company */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Company</label>
-              <input
-                type="text"
-                {...register('company')}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              />
+              {/* Company */}
+              <div className='w-full'>
+                <label className="block text-sm font-medium text-gray-700">Company</label>
+                <input
+                  type="text"
+                  {...register('company')}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
+                />
+              </div>
             </div>
 
             {/* Tags */}

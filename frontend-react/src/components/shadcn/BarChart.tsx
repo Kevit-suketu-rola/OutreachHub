@@ -82,7 +82,7 @@ export const UserBarChart: React.FC<{ users: User[] }> = ({ users }) => {
                   'Nov',
                   'Dec',
                 ];
-                return months[month - 1] || 'unknown';
+                return months[month] || 'unknown';
               }}
             />
 

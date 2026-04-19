@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BASE_URL, navigateLogin } from './authSlice';
 
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/message-template`,
+  baseURL: `${BASE_URL}/message-template/`,
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -13,7 +13,7 @@ export const fetchMessageTemplates = createAsyncThunk(
   'template/fetchAll',
   async (workspaceId: string | undefined, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get(`/all/${workspaceId}`, {
+      const res = await axiosInstance.get(`all/${workspaceId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -37,7 +37,7 @@ export const createMessageTemplate = createAsyncThunk(
   'user/createTemplate',
   async (data: CreateTemplate, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post(`/create`, data, {
+      const res = await axiosInstance.post(`create`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -62,7 +62,7 @@ export const editMessageTemplate = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const res = await axiosInstance.put(`/update/${data.id}`, data.update, {
+      const res = await axiosInstance.put(`update/${data.id}`, data.update, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -78,7 +78,7 @@ export const deleteMessageTemplate = createAsyncThunk(
   'user/deleteTemplate',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/delete/${id}`, {
+      await axiosInstance.delete(`delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },

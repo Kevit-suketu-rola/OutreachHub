@@ -49,4 +49,10 @@ export class WorkspaceUserController {
   async getNoOfUsers(@Param('workspaceId') workspaceId: string) {
     return await this.workspaceUserService.getNoOfUsers(workspaceId);
   }
+
+  @Get('users-per-workspace')
+  @UseGuards(GeneralGuard)
+  async getUsersPerWorkspace() {
+    return await this.workspaceUserService.getUsersPerWorkspace();
+  }
 }

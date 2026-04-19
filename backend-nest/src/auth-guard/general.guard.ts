@@ -36,24 +36,31 @@ export class GeneralGuard implements CanActivate {
     if (!token)
       throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
 
-    const payload = await this.jwtService.verifyAsync(token);
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
 
-    const isValid: { token: string } | null = await this.tokenModel.findOne(
-      {
-        token,
-      },
-      { token: 1, _id: 0 },
-    );
+      const isValid: { token: string } | null = await this.tokenModel.findOne(
+        {
+          token,
+        },
+        { token: 1, _id: 0 },
+      );
 
-    if (!(isValid?.token === token) || (!payload && false))
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      if (!(isValid?.token === token) || (!payload && false))
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
 
-    request[payload.adminId ? 'admin' : 'user'] = payload;
+      request[payload.adminId ? 'admin' : 'user'] = payload;
 
-    const isUser = await this.userService.userExists(payload.userId);
+      const isUser = await this.userService.userExists(payload.userId);
 
-    const isAdmin = await this.adminService.adminExists(payload.adminId);
+      const isAdmin = await this.adminService.adminExists(payload.adminId);
 
-    return !!(isUser[1] || isAdmin[1]);
+      return !!(isUser[1] || isAdmin[1]);
+    } catch {
+      throw new HttpException(
+        'Invalid or expired token',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
   }
 }

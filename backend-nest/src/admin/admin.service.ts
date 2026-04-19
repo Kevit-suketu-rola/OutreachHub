@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Admin } from './admin.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import bcrypt from 'node_modules/bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Token } from 'src/auth-guard/token.schema';
 import { AdminLoginDto, CreateAdminDto } from './admin.dto';
@@ -31,15 +31,7 @@ export class AdminService {
       if (!passwordMatch)
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
 
-      let alreadyLoggedIn = await this.tokenModel.findOne({
-        userId: foundAdmin._id,
-      });
-      if (alreadyLoggedIn) {
-        return {
-          message: 'Already logged in',
-          token: alreadyLoggedIn.token,
-        };
-      }
+      await this.tokenModel.deleteMany({ userId: foundAdmin._id });
 
       const token = await this.jwtService.signAsync(
         {
@@ -60,9 +52,11 @@ export class AdminService {
         token,
       };
     } catch (error) {
-      return {
-        message: 'Login failed',
-      };
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(
+        'Login failed: ' + error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

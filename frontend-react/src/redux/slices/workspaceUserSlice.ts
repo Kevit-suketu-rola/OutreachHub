@@ -7,7 +7,7 @@ import { User } from './userSlice';
 import { Workspace } from './workspaceSlice';
 
 export const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/workspace-user`,
+  baseURL: `${BASE_URL}/workspace-user/`,
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -163,11 +163,13 @@ const WorkspaceSlice = createSlice({
         (state: WorkspaceState, action: PayloadAction<{ workspaceUser: WorkspaceUser }>) => {
           state.loading = false;
           state.workspaceUser = action.payload.workspaceUser;
-          localStorage.setItem('write', action.payload.workspaceUser.permissions.write.toString());
-          localStorage.setItem(
-            'allowAdd',
-            action.payload.workspaceUser.permissions.allowAdd.toString(),
-          );
+          if (action.payload.workspaceUser && action.payload.workspaceUser.permissions) {
+            localStorage.setItem('write', action.payload.workspaceUser.permissions.write.toString());
+            localStorage.setItem(
+              'allowAdd',
+              action.payload.workspaceUser.permissions.allowAdd.toString(),
+            );
+          }
         },
       )
       .addCase(getUsers.pending, (state: WorkspaceState) => {

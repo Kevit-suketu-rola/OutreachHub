@@ -7,7 +7,7 @@ import { User } from './userSlice';
 import { Workspace } from './workspaceSlice';
 
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/campaign`,
+  baseURL: `${BASE_URL}/campaign/`,
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -16,7 +16,7 @@ export const fetchAllCampaigns = createAsyncThunk(
   'admin/fetchAllCampaigns',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all', {
+      const response = await axiosInstance.get('all', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -33,7 +33,7 @@ export const fetchACampaign = createAsyncThunk(
   'common/fetchACampaign',
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/by-id/${id}`, {
+      const response = await axiosInstance.get(`by-id/${id}`, {
         headers: {
           Authorization: `Bearer ${
             localStorage.getItem('token') || localStorage.getItem('user-token')
@@ -52,7 +52,7 @@ export const getAllCampaignsForUser = createAsyncThunk(
   'user/getAllCampaigns',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all-of-user', {
+      const response = await axiosInstance.get('all-of-user', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -69,7 +69,7 @@ export const getAllCampaignsOfWorkspace = createAsyncThunk(
   'user/getAllCampaignsOfWorkspace',
   async (id: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/all-of-workspace/${id}`, {
+      const response = await axiosInstance.get(`all-of-workspace/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -99,7 +99,7 @@ export const editCampaign = createAsyncThunk(
   async ({ id, data }: { id: string; data: UpdateCampaign }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `/update/${id}`,
+        `update/${id}`,
         { ...data },
         {
           headers: {
@@ -120,7 +120,7 @@ export const launchCampaign = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `/launch/${id}`,
+        `launch/${id}`,
         {},
         {
           headers: {
@@ -141,7 +141,7 @@ export const createCampaign = createAsyncThunk(
   async (campaign: Campaign, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `/create`,
+        `create`,
         { ...campaign },
         {
           headers: {
@@ -161,7 +161,7 @@ export const deleteCampaign = createAsyncThunk(
   'user/deleteCampaign',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/delete/${id}`, {
+      await axiosInstance.delete(`delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },

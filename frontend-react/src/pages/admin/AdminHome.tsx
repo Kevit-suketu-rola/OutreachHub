@@ -15,7 +15,7 @@ const AdminHome = () => {
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/');
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchAllCampaigns());

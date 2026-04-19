@@ -10,7 +10,7 @@ export const fetchAllWorkspaces = createAsyncThunk(
   'admin/fetchAllWorkspaces',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all-for-admin', {
+      const response = await axiosInstance.get('all-for-admin', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -27,7 +27,7 @@ export const fetchAllWorkspacesOfUser = createAsyncThunk(
   'user/fetchAllWorkspacesOfUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all-for-user', {
+      const response = await axiosInstance.get('all-for-user', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -44,7 +44,7 @@ export const fetchAWorkspace = createAsyncThunk(
   'admin/fetchAWorkspace',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all-for-admin', {
+      const response = await axiosInstance.get('all-for-admin', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -70,7 +70,7 @@ export const editWorkspace = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.put(
-        `/update/${workspace._id}`,
+        `update/${workspace._id}`,
         { ...workspace },
         {
           headers: {
@@ -90,7 +90,7 @@ export const deleteWorkspace = createAsyncThunk(
   'admin/deleteWorkspace',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/delete/${id}`, {
+      await axiosInstance.delete(`delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -114,7 +114,7 @@ export const createWorkspace = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.post(
-        `/create`,
+        `create`,
         { ...workspace },
         {
           headers: {

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BASE_URL } from './authSlice';
 
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/contact`,
+  baseURL: `${BASE_URL}/contact/`,
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -13,7 +13,7 @@ export const fetchAllContacts = createAsyncThunk(
   'admin/fetchAllContacts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all', {
+      const response = await axiosInstance.get('all', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -30,7 +30,7 @@ export const fetchContactsOfWorkspace = createAsyncThunk(
   'user/fetchContactsOfWorkspace',
   async (id: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/workspace/${id}`, {
+      const response = await axiosInstance.get(`workspace/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },
@@ -54,7 +54,7 @@ export const editContact = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.put(
-        `/update/${data.id}`,
+        `update/${data.id}`,
         { ...data.update },
         {
           headers: {
@@ -75,7 +75,7 @@ export const createContact = createAsyncThunk(
   async (contact: Contact, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `/create`,
+        `create`,
         { ...contact },
         {
           headers: {
@@ -98,7 +98,7 @@ export const deleteContact = createAsyncThunk(
   'user/deleteContact',
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/delete/${id}`, {
+      await axiosInstance.delete(`delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`,
         },

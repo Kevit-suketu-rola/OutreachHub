@@ -134,11 +134,7 @@ export class WorkspaceUserService {
       })
       .populate('workspaceId', 'name tags');
 
-    if (workspaces.length === 0) {
-      throw new HttpException('No workspaces found', HttpStatus.NOT_FOUND);
-    } else {
-      return workspaces;
-    }
+    return workspaces;
   }
   async deleteWorkspaceUser(id: string, userFlag: boolean) {
     try {
@@ -183,5 +179,34 @@ export class WorkspaceUserService {
       isDeleted: false,
     });
     return { userCount: noOfUsers };
+  }
+
+  async getUsersPerWorkspace() {
+    const counts = await this.workspaceUserModel.aggregate([
+      { $match: { isDeleted: false } },
+      {
+        $group: {
+          _id: '$workspaceId',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'workspaces',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'workspace',
+        },
+      },
+      { $unwind: '$workspace' },
+      {
+        $project: {
+          _id: 0,
+          workspaceName: '$workspace.name',
+          count: 1,
+        },
+      },
+    ]);
+    return { count: counts };
   }
 }

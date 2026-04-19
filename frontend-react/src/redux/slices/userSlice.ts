@@ -5,7 +5,7 @@ import { BASE_URL } from './authSlice';
 import { Workspace } from './workspaceSlice';
 
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}/user`,
+  baseURL: `${BASE_URL}/user/`,
   timeout: 2000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -14,7 +14,7 @@ export const fetchAllUsers = createAsyncThunk(
   'admin/fetchAllUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/all', {
+      const response = await axiosInstance.get('all', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -27,7 +27,7 @@ export const fetchAllUsers = createAsyncThunk(
 );
 export const fetchAUser = createAsyncThunk('admin/fetchAUser', async (id, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`/by-id/${id}`, {
+    const response = await axiosInstance.get(`by-id/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -51,7 +51,7 @@ export const editUser = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.put(
-        `/update/${user._id}`,
+        `update/${user._id}`,
         { ...user },
         {
           headers: {
@@ -107,7 +107,7 @@ export const createUser = createAsyncThunk(
     }
     try {
       const response = await axiosInstance.post(
-        `/create`,
+        `create`,
         { ...user },
         {
           headers: {
@@ -131,7 +131,7 @@ export const setCurrentWorkspace = createAsyncThunk(
     if (name === '') return { id: workspaceId, name: name };
     try {
       await axiosInstance.post(
-        '/set-current-workspace',
+        'set-current-workspace',
         { workspaceId: workspaceId },
         {
           headers: {

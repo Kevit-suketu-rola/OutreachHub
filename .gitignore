@@ -1,0 +1,37 @@
+# --- Dependencies ---
+node_modules/
+jspm_packages/
+venv/
+.venv/
+env/
+/bin/
+
+# --- Environment Variables (Secrets) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.secret
+*.key
+
+# --- Build & Runtime Artifacts ---
+dist/
+build/
+*.out
+*.log
+*.sqlite
+*.class
+
+# --- IDE & Editor Settings ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+.settings/
+
+# --- Documentation ---
+docs/_build/
+
+.vite/

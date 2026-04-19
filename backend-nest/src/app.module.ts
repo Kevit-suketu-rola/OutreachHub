@@ -14,7 +14,7 @@ import { ContactModule } from './contact/contact.module';
 import { MessageTemplateModule } from './message-template/message-template.module';
 import { WorkspaceUserModule } from './workspace-user/workspace-user.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 import { CampaignMessageModule } from './campaign-message/campaign-message.module';
 
 @Module({
@@ -55,7 +55,7 @@ import { CampaignMessageModule } from './campaign-message/campaign-message.modul
     ContactModule,
     MessageTemplateModule,
     WorkspaceUserModule,
-    AwsS3Module,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

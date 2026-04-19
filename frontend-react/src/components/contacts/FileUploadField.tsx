@@ -69,7 +69,7 @@ export const FileUploadField: React.FC<FileUploadFieldProps> = ({ name, label, d
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <div className="flex items-center gap-4">
-            <Avatar className={`h-20 w-20 border ${name === 'templateImagee' ? 'rounded-none w-24' : ''}`}>
+            <Avatar className={`h-20 w-20 border ${name === 'templateImage' ? 'rounded-none w-24' : ''}`}>
               <AvatarImage src={currentImageUrl || url} alt="Image Preview" />
               <AvatarFallback>PIC</AvatarFallback>
             </Avatar>

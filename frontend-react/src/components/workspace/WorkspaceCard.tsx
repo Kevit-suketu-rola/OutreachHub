@@ -40,7 +40,7 @@ const WorkspaceCard: React.FC<{
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        setWorkspaceUsers(res1.data.workspaceUsers);
+        setWorkspaceUsers(res1.data.workspaceUsers || []);
 
         const res2 = await axios(`${BASE_URL}/campaign/all-of-workspace/${workspace._id}`, {
           headers: {
@@ -48,7 +48,7 @@ const WorkspaceCard: React.FC<{
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        setCampaigns(res2.data.campaigns);
+        setCampaigns(res2.data.campaigns || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -99,22 +99,22 @@ const WorkspaceCard: React.FC<{
               setOpenUsers={setOpenUsers}
             />
           </div>
-          <p className="text-sm text-muted-foreground">{workspace.description.length > 50 ? workspace.description.slice(0, 50) + '...' : workspace.description}</p>
+          <p className="text-sm text-muted-foreground">{(workspace.description || '').length > 50 ? workspace.description?.slice(0, 50) + '...' : workspace.description}</p>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-1">
             <p>
-              <strong>Tags:</strong> {workspace.tags.join(', ')}
+              <strong>Tags:</strong> {(workspace.tags || []).join(', ')}
             </p>
             <p>
               <strong>Users:</strong> {userCount}
             </p>
             <p>
-              <strong>Campaigns:</strong> {campaigns.length}
+              <strong>Campaigns:</strong> {(campaigns || []).length}
             </p>
             <p>
               <strong>Created:</strong>{' '}
-              {new Date(workspace.createdAt as string).toLocaleDateString()}
+              {workspace.createdAt ? new Date(workspace.createdAt as string).toLocaleDateString() : 'N/A'}
             </p>
           </div>
         </CardContent>

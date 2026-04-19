@@ -23,12 +23,6 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    if (localStorage.getItem('user-token')) {
-      navigate('/user');
-    }
-  }, []);
-
   const onSubmit = async (data: FormData) => {
     const resultAction = await dispatch(loginUser(data));
 

@@ -11,9 +11,9 @@ import { persistor, store } from './redux/store.ts';
 createRoot(document.getElementById('root')!).render(
   <PersistGate loading={null} persistor={persistor}>
     <Provider store={store}>
-      <StrictMode>
+      {/* <StrictMode> */}
         <App />
-      </StrictMode>
+      {/* </StrictMode> */}
     </Provider>
   </PersistGate>,
 );

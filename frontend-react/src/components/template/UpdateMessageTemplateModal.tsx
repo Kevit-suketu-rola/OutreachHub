@@ -10,7 +10,7 @@ export type TemplateFormValues = {
   title: string;
   template: string;
   type: 'text' | 'text-image';
-  templateImagee?: string;
+  templateImage?: string;
 };
 
 type Props = {
@@ -20,27 +20,27 @@ type Props = {
 };
 
 export const UpdateMessageTemplateModal: React.FC<Props> = ({ template, onClose, onSubmit }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<TemplateFormValues>({
+  const methods = useForm<TemplateFormValues>({
     defaultValues: {
       ...template,
       type: template.type === 'text-image' ? 'text-image' : 'text',
     },
   });
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = methods;
+
   const [isChecked, setIsChecked] = useState(false);
-  const methods = useForm();
 
   useEffect(() => {
     if (template.templateImage) {
       setIsChecked(true);
     }
-  }, [])
+  }, [template.templateImage])
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center">
@@ -74,7 +74,7 @@ export const UpdateMessageTemplateModal: React.FC<Props> = ({ template, onClose,
             </div>
             {isChecked && (
               <div>
-                <FileUploadField name="templateImagee" label="Template Image" url={template.templateImage} />
+                <FileUploadField name="templateImage" label="Template Image" url={template.templateImage} />
               </div>
             )}
             <div>

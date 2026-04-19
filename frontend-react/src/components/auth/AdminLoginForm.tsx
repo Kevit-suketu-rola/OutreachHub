@@ -17,10 +17,6 @@ export default function AdminLoginForm() {
   const error = useSelector((state: RootState) => state.auth?.error);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) navigate('/admin');
-  });
-
   const {
     register,
     handleSubmit,

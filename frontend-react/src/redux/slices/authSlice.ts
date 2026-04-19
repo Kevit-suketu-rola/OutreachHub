@@ -9,8 +9,8 @@ export const navigateLogin = () => {
 
 export const createAxiosInstance = (path: string = '') => {
   const axiosInstance = axios.create({
-    baseURL: `${BASE_URL}/${path}`,
-    timeout: 2000,
+    baseURL: `${BASE_URL}/${path}${path ? (path.endsWith('/') ? '' : '/') : ''}`,
+    timeout: 5000,
     headers: { 'Content-Type': 'application/json' },
   });
   axiosInstance.interceptors.response.use(
@@ -26,8 +26,10 @@ export const createAxiosInstance = (path: string = '') => {
           : '';
 
       if (
-        status === 401 ||
-        (typeof message === 'string' && message.toUpperCase().includes('UNAUTHORIZED'))
+        status === 401 &&
+        window.location.pathname !== '/' &&
+        window.location.pathname !== '/login' &&
+        window.location.pathname !== '/admin-login'
       ) {
         window.location.href = '/';
       }
@@ -81,7 +83,7 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, { reject
       '/user/logout',
       { id: localStorage.getItem('userId') },
       {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('user-token')}` },
       },
     );
     if (response.data.message) {

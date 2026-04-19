@@ -100,7 +100,7 @@ const UserWorkspacesTable = () => {
                   <TableRow key={index} className="hover:bg-violet-100">
                     <TableCell>{row.workspaceId.name}</TableCell>
                     <TableCell>
-                      {Object.entries(row.permissions).map(([permKey, permValue]) =>
+                      {row.permissions && Object.entries(row.permissions).map(([permKey, permValue]) =>
                         permValue ? (
                           <Chip
                             key={permKey}

@@ -6,8 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WorkspaceModule } from 'src/workspace/workspace.module';
 import { Token, TokenSchema } from 'src/auth-guard/token.schema';
-import { AwsS3Controller } from './aws-s3.controller';
-import { AwsS3Service } from './aws-s3.service';
+import { FileUploadController } from './file-upload.controller';
+import { FileUploadService } from './file-upload.service';
 import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
 
 @Module({
@@ -18,7 +18,7 @@ import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
     forwardRef(() => WorkspaceModule),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('jwt_key'),
+        secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '1h' },
       }),
       inject: [ConfigService],
@@ -26,7 +26,8 @@ import { WorkspaceUserModule } from 'src/workspace-user/workspace-user.module';
     }),
     WorkspaceUserModule,
   ],
-  controllers: [AwsS3Controller],
-  providers: [AwsS3Service],
+  controllers: [FileUploadController],
+  providers: [FileUploadService],
+  exports: [FileUploadService],
 })
-export class AwsS3Module {}
+export class FileUploadModule {}

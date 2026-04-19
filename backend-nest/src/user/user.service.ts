@@ -43,23 +43,7 @@ export class UserService {
         throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
       }
 
-      let alreadyLoggedIn = await this.tokenModel.findOne(
-        {
-          userId: user._id,
-        },
-        { token: 1, _id: 0 },
-      );
-
-      if (alreadyLoggedIn) {
-        return {
-          message: 'Already logged in',
-          token: alreadyLoggedIn.token,
-          user: {
-            userId: user._id,
-            name: user.name,
-          },
-        };
-      }
+      await this.tokenModel.deleteMany({ userId: user._id });
 
       const token = await this.jwtService.signAsync(
         { userId: user._id },
@@ -82,8 +66,12 @@ export class UserService {
         },
       };
     } catch (error) {
+      console.error('Login error:', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(
-        'Failed to login user',
+        'Failed to login user: ' + error.message,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -247,7 +235,7 @@ export class UserService {
 
       return [user, true];
     } catch (err) {
-      return [null, true];
+      return [null, false];
     }
   }
 }
